@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KIKI暑假计划</title>
+<style>
+  :root{
+    --bg1:#fdf3e2; --bg2:#f7e4c3; --bg3:#efd2a6;
+    --ink:#5b4632; --muted:#a78a68;
+    --chinese:#cf7d44; --math:#6ba3d4; --english:#7cbf8c; --poem:#b58ec6;
+    --gold:#eab94a; --card:#fffaf0; --line:#f0e3cf;
+    --good:#6fae74; --ok:#eab94a; --bad:#bda98c;
+    --c:#cf7d44;
+    --shadow:0 10px 28px rgba(140,100,55,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--ink);background:linear-gradient(135deg,var(--bg1),var(--bg2) 45%,var(--bg3));
+    min-height:100vh;padding:18px 14px 60px;}
+  .wrap{max-width:1180px;margin:0 auto}
+  header.top{background:linear-gradient(120deg,#b9803f,#cf9450 55%,#e3ad5c);color:#fff8ec;border-radius:24px;
+    padding:24px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+  header.top h1{font-size:26px;letter-spacing:1px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  header.top p{opacity:.95;margin-top:6px;font-size:14px}
+  .sun{position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(circle,#fff3d6,#f6dca0);opacity:.5;filter:blur(2px)}
+  /* 轻松熊装饰 */
+  .bear{position:absolute;right:24px;top:14px;width:90px;height:90px;pointer-events:none;z-index:1}
+  .bear .ear{position:absolute;width:30px;height:30px;border-radius:50%;background:#e6b079;top:2px;z-index:0}
+  .bear .ear.l{left:14px}.bear .ear.r{right:14px}
+  .bear .head{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;
+    border-radius:50%;background:#e6b079;box-shadow:0 4px 10px rgba(120,80,40,.22);z-index:1}
+  .bear .face{position:absolute;left:50%;top:53%;transform:translate(-50%,-50%);width:50px;height:42px;
+    border-radius:50%;background:#fbeccf;z-index:2}
+  .bear .eye{position:absolute;width:7px;height:7px;border-radius:50%;background:#5b4632;z-index:3}
+  .bear .eye.l{left:32px;top:40px}.bear .eye.r{right:32px;top:40px}
+  .bear .nose{position:absolute;left:50%;top:52px;transform:translateX(-50%);width:10px;height:8px;
+    border-radius:50%;background:#5b4632;z-index:3}
+  @media(max-width:560px){.bear{display:none}}
+  .points-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.22);
+    border:1px solid rgba(255,255,255,.4);border-radius:99px;padding:6px 14px;margin-top:12px;font-size:14px;font-weight:600}
+  .points-pill b{font-size:17px}
+  .points-pill.pulse{animation:pulse .5s ease}
+  @keyframes pulse{0%{transform:scale(1)}40%{transform:scale(1.12);background:rgba(255,255,255,.45)}100%{transform:scale(1)}}
+  .overall{margin-top:14px;background:rgba(255,255,255,.18);border-radius:14px;padding:12px 14px}
+  .obar{height:12px;border-radius:99px;background:rgba(255,255,255,.35);overflow:hidden;margin-top:8px}
+  .obar>i{display:block;height:100%;background:#fff;border-radius:99px;transition:width .5s ease;width:0}
+  .o-num{font-size:13px;display:flex;justify-content:space-between;opacity:.95}
+  .banner-stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .bstat{flex:1 1 150px;background:rgba(255,255,255,.18);border-radius:14px;padding:10px 16px;
+    display:flex;flex-direction:column;gap:3px;backdrop-filter:blur(2px)}
+  .bstat .bn{font-size:27px;font-weight:800;line-height:1}
+  .bstat .bt{font-size:12.5px;opacity:.95}
+
+  /* 左侧固定导航栏 */
+  nav.sidebar-nav{display:flex;flex-direction:column;gap:6px;background:var(--card);border-radius:18px;
+    padding:14px 12px;box-shadow:var(--shadow);width:208px;flex:0 0 208px;position:sticky;top:14px;align-self:flex-start}
+  nav.sidebar-nav button{border:none;cursor:pointer;font-size:14px;font-weight:600;text-align:left;
+    padding:12px 14px;border-radius:12px;background:transparent;color:var(--ink);transition:.2s;
+    display:flex;align-items:center;gap:9px;width:100%}
+  nav.sidebar-nav button:hover{background:#fff3e0}
+  nav.sidebar-nav button.on{background:linear-gradient(120deg,#ffb347,#ff7a59);color:#fff;box-shadow:var(--shadow)}
+
+  .panel{display:none;animation:fade .3s ease}
+  .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}}
+  .sub-card{background:var(--card);border-radius:18px;padding:18px;box-shadow:var(--shadow);cursor:pointer;
+    border-top:5px solid var(--c);transition:.2s;position:relative}
+  .sub-card:hover{transform:translateY(-4px)}
+  .sub-card .em{font-size:30px}
+  .sub-card h3{font-size:18px;margin:6px 0 2px}
+  .sub-card .pc{font-size:13px;color:var(--muted);margin-top:8px}
+  .mini{height:9px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}
+  .mini>i{display:block;height:100%;background:var(--c);width:0;transition:width .5s}
+
+  .sec{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+  .sec h2{font-size:18px;display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+  .sec .hint{font-size:13px;color:var(--muted);margin-bottom:14px}
+  .badge{font-size:12px;padding:3px 10px;border-radius:99px;background:#fff1e0;color:#d9772b}
+
+  .daynav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff6ea;border:1px solid #ffe0b8;
+    border-radius:12px;padding:10px 12px;margin-bottom:8px}
+  .daynav button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;cursor:pointer;
+    font-size:13px;font-weight:600}
+  .daynav button:hover{border-color:var(--gold)}
+  .daynav .today-btn{background:linear-gradient(120deg,#ffb347,#ff7a59);color:#fff;border:none}
+  .daynav .dlabel{font-size:15px;font-weight:700;flex:1;min-width:170px}
+
+  .add-row{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+  .add-row input{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;outline:none;min-width:120px}
+  .add-row input:focus{border-color:var(--c)}
+  .add-row button{border:none;background:var(--c);color:#fff;border-radius:10px;padding:0 16px;cursor:pointer;font-weight:600}
+
+  ul.list{list-style:none}
+  ul.list li{display:flex;flex-direction:row-reverse;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px dashed var(--line);font-size:14px}
+  ul.list li:last-child{border-bottom:none}
+  .chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--c);flex:0 0 auto;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;margin-top:1px;transition:.15s}
+  .chk.done{background:var(--c)}
+  .li-txt{flex:1;line-height:1.5}
+  .li-txt .date{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+  .li-txt.done{color:var(--muted);text-decoration:line-through}
+  .del{border:none;background:none;color:#c9c9d4;cursor:pointer;font-size:16px;padding:0 4px}
+  .del:hover{color:#ff5e7e}
+
+  .progress-big{height:16px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 4px}
+  .progress-big>i{display:block;height:100%;background:linear-gradient(90deg,var(--c),#ffd07a);width:0;transition:width .6s}
+  .pstats{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+
+  .grid-scroll{overflow-x:auto;border-radius:14px;border:1px solid var(--line)}
+  table.daily{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+  table.daily th,table.daily td{border:1px solid var(--line);padding:8px 6px;text-align:center;vertical-align:middle}
+  table.daily thead th{background:#fff4e6;position:sticky;top:0}
+  table.daily .wk{background:#fff0f3;font-weight:700}
+  table.daily .slot{background:#fafbff}
+  .cell{cursor:pointer;min-width:64px;user-select:none;border-radius:6px}
+  .cell:hover{background:#fff3da}
+  .cell.on{background:#e6f7ee;color:var(--good);font-weight:700}
+  .eval{display:inline-flex;gap:2px;cursor:pointer;font-size:16px}
+  .eval span{opacity:.25;transition:.15s}
+  .eval span.lit{opacity:1}
+  .note-input{border:none;outline:none;width:90px;font-size:12px;text-align:center;background:transparent}
+  .legend{font-size:12px;color:var(--muted);margin-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+  .legend b{color:var(--ink)}
+
+  /* poems */
+  .poem-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+  .poem-card{background:linear-gradient(180deg,#fbf3ff,#ffffff);border:1px solid #ecd9ff;border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+  .pc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .pc-title{font-size:18px;font-weight:800}
+  .pc-author{font-size:13px;color:var(--muted);margin-top:2px}
+  .pc-badge{font-size:12px;background:var(--poem);color:#fff;padding:3px 10px;border-radius:99px;white-space:nowrap}
+  .pc-text{font-size:16px;line-height:1.9;margin:10px 0;padding:10px 12px;background:#f7f0ff;border-radius:10px;letter-spacing:1px}
+  .pc-note{font-size:13px;color:#5a5a6a;margin:6px 0}
+  .pc-trans{font-size:13px;color:#5a5a6a;line-height:1.6}
+  .pc-actions{display:flex;gap:8px;margin-top:12px}
+  .pc-btn{border:none;border-radius:10px;padding:10px 0;font-weight:700;cursor:pointer;flex:1;font-size:14px}
+  .pc-btn.read{background:#e8f4ff;color:#2f6fd6}
+  .pc-btn.rec{background:linear-gradient(120deg,#b07be8,#9b59d0);color:#fff}
+  table.poems{border-collapse:collapse;width:100%;min-width:980px;font-size:12.5px}
+  table.poems th,table.poems td{border:1px solid var(--line);padding:7px 5px;text-align:center}
+  table.poems thead th{background:#f6ecff;position:sticky;top:0}
+  table.poems td.name{text-align:left;white-space:nowrap}
+  table.poems .seq{color:var(--muted);width:34px}
+  table.poems .rchk{width:30px;height:24px;border-radius:6px;border:2px solid var(--poem);cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:12px}
+  table.poems .rchk.done{background:var(--poem)}
+  table.poems .rchk.due{box-shadow:0 0 0 3px #ffd07a;animation:blink 1.2s infinite}
+  @keyframes blink{50%{box-shadow:0 0 0 3px #ffb347}}
+
+  /* rewards */
+  .avail-big{text-align:center;background:linear-gradient(120deg,#fff3d6,#ffe1ee);border-radius:18px;
+    padding:18px;margin-bottom:14px}
+  .avail-big .n{font-size:40px;font-weight:800;color:#e08a00}
+  .avail-big .t{font-size:13px;color:var(--muted)}
+  .reward-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .reward{background:#fffaf2;border:1px solid #ffe2bd;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
+  .reward .top{display:flex;align-items:center;gap:8px;font-size:22px}
+  .reward .nm{font-size:14px;font-weight:600;border:none;background:transparent;outline:none;flex:1;min-width:0}
+  .reward .cost{font-size:13px;color:#d9772b;font-weight:700}
+  .reward .cost input{width:54px;border:1px solid var(--line);border-radius:8px;padding:3px 6px;font-size:13px;text-align:center;outline:none}
+  .reward .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .reward button.go{border:none;background:linear-gradient(120deg,#ffb347,#ff7a59);color:#fff;border-radius:10px;
+    padding:8px 0;font-weight:700;cursor:pointer;flex:1}
+  .reward button.go:disabled{background:#e6e6ee;color:#b0b0bd;cursor:not-allowed}
+  .reward .del2{border:none;background:none;color:#c9c9d4;cursor:pointer;font-size:15px}
+
+  .footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+  .empty{color:var(--muted);font-size:14px;padding:16px;text-align:center;background:#fafbff;border-radius:12px}
+  .toolbar{display:flex;gap:8px;justify-content:flex-end;margin-bottom:10px;flex-wrap:wrap}
+  .toolbar button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;cursor:pointer;font-size:13px}
+  .toolbar button:hover{border-color:var(--gold)}
+  .goal-txt{border:none;outline:none;flex:1;font-size:14px;background:transparent;line-height:1.5}
+  .toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:#2b2b3a;color:#fff;
+    padding:12px 20px;border-radius:12px;font-size:14px;box-shadow:var(--shadow);opacity:0;transition:.3s;z-index:99;pointer-events:none}
+  .toast.show{opacity:1;bottom:56px}
+
+  /* layout：左侧固定导航 + 右侧主内容 */
+  .layout{display:flex;gap:16px;align-items:flex-start;max-width:1180px;margin:0 auto}
+  .main{flex:1;min-width:0}
+  @media(max-width:860px){
+    .layout{flex-direction:column}
+    nav.sidebar-nav{flex:none;width:100%;flex-direction:row;overflow-x:auto;position:static;white-space:nowrap}
+    nav.sidebar-nav button{width:auto;flex:0 0 auto}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="sun"></div>
+    <div class="bear"><span class="ear l"></span><span class="ear r"></span><span class="head"></span><span class="face"></span><span class="eye l"></span><span class="eye r"></span><span class="nose"></span></div>
+    <h1>🐻 KIKI暑假计划
+      <span class="points-pill" id="points-pill">🍯 可用积分 <b id="avail">0</b></span>
+    </h1>
+    <p>语文 · 数学 · 英语 · 古诗背诵 — 学习目标 / 学习内容 / 完成记录 / 积分奖励</p>
+    <div class="banner-stats">
+      <div class="bstat"><div class="bn" id="streak-days">0</div><div class="bt">🔥 已坚持学习（天）</div></div>
+      <div class="bstat"><div class="bn" id="poems-mastered">0</div><div class="bt">📜 已掌握古诗（首）</div></div>
+    </div>
+    <div class="overall">
+      <div class="o-num"><span>总体完成进度</span><span id="o-label">0 / 0</span></div>
+      <div class="obar"><i id="o-bar"></i></div>
+    </div>
+  </header>
+
+  <div class="layout">
+  <nav class="sidebar-nav" id="tabs">
+    <button data-tab="overview" class="on">📊 总览</button>
+    <button data-tab="chinese">📖 语文</button>
+    <button data-tab="math">🔢 数学</button>
+    <button data-tab="english">🔤 英语</button>
+    <button data-tab="poems">📜 古诗背诵</button>
+    <button data-tab="daily">📆 计划日历</button>
+    <button data-tab="rewards">🎁 积分兑换</button>
+  </nav>
+
+  <div class="main">
+  <section class="panel on" id="panel-overview"></section>
+  <section class="panel" id="panel-chinese"></section>
+  <section class="panel" id="panel-math"></section>
+  <section class="panel" id="panel-english"></section>
+  <section class="panel" id="panel-poems"></section>
+  <section class="panel" id="panel-daily"></section>
+
+  <section class="panel" id="panel-rewards">
+    <div class="toolbar">
+      <button onclick="exportData()">⬇ 导出数据</button>
+      <button onclick="importData()">⬆ 导入数据</button>
+      <button onclick="resetAll()">↺ 重置</button>
+    </div>
+    <div class="sec">
+      <h2>🎁 积分兑换</h2>
+      <div class="hint">完成学习任务赚积分，攒够就能兑换自己喜欢的奖励！积分不足时按钮会变灰。</div>
+      <div class="avail-big"><div class="n" id="avail-big">0</div><div class="t">当前可用积分 🪙</div></div>
+      <div style="font-size:13px;color:var(--muted);margin:6px 0 10px">赚积分方式：完成每日计划 1 项 +5 ｜ 完成科目学习内容 1 项 +10 ｜ 开背/复习古诗 +10/+2</div>
+      <div class="reward-grid" id="reward-grid"></div>
+      <div class="add-row" style="margin-top:14px">
+        <input id="rw-emoji" placeholder="图标 emoji，如 🍦" style="max-width:120px" />
+        <input id="rw-name" placeholder="奖励名称，如 奖励一个冰淇淋" />
+        <input id="rw-cost" placeholder="所需积分" style="max-width:110px" />
+        <button onclick="addReward()" style="--c:var(--gold)">+ 添加奖励</button>
+      </div>
+    </div>
+    <div class="sec">
+      <h2>🧾 兑换记录</h2>
+      <div class="hint">这里记录你已经兑换的奖励。</div>
+      <ul class="list" id="redeem-log"></ul>
+    </div>
+  </section>
+
+  </div>
+  </div>
+
+  <div class="footer">数据保存在「当前浏览器 + 当前网址」下，关闭页面不丢失；但换设备 / 换网址（如手机扫码链接）<b>不会自动同步</b>。· <span id="save-status">尚未保存</span> · KIKI暑假计划</div>
+</div>
+<div class="toast" id="toast"></div>
+<input type="file" id="import-file" accept="application/json" style="display:none" />
+
+<script>
+const POEM_SEED=[[1,"江南（汉乐府）","2026-07-20"],[2,"长歌行（汉乐府）","2026-07-20"],[3,"敕勒歌 北朝民歌","2026-07-21"],[4,"咏鹅 唐 骆宾王","2026-07-21"],[5,"风 唐 李峤","2026-07-22"],[6,"咏柳 唐 贺知章","2026-07-22"],[7,"回乡偶书 唐 贺知章","2026-07-23"],[8,"凉州词 唐 王之焕","2026-07-23"],[9,"登鹳雀楼 唐 王之焕","2026-07-24"],[10,"春晓 唐 孟浩然","2026-07-24"],[11,"凉州词 唐 王翰","2026-07-25"],[12,"出塞 唐 王昌龄","2026-07-25"],[13,"芙蓉楼送辛渐 唐 王昌龄","2026-07-26"],[14,"鹿柴 唐 王维","2026-07-26"],[15,"送元二使安西 唐 王维","2026-07-27"],[16,"九月九日忆山东兄弟 唐王维","2026-07-27"],[17,"静夜思 唐 李白","2026-07-28"],[18,"古朗月行节选 唐 李白","2026-07-28"],[19,"望庐山瀑布 唐 李白","2026-07-29"],[20,"赠汪伦 唐 李白","2026-07-29"],[21,"黄鹤楼送孟浩然之广陵 唐 李白","2026-07-30"],[22,"早发白帝城 唐 李白","2026-07-30"],[23,"望天门山 唐 李白","2026-07-31"],[24,"别董大 唐 高适","2026-07-31"],[25,"绝句 唐 杜甫","2026-08-01"],[26,"春夜喜雨 唐 杜甫","2026-08-01"],[27,"绝句 唐 杜甫","2026-08-02"],[28,"江畔独步寻花 唐 杜甫","2026-08-02"],[29,"枫桥夜泊 唐 张继","2026-08-03"],[30,"滁州西涧 唐 韦应物","2026-08-03"],[31,"游子吟 唐 孟郊","2026-08-04"],[32,"早春呈水部张十八员外 唐 韩愈","2026-08-04"],[33,"渔歌子 唐 张志和","2026-08-05"],[34,"塞下曲 唐 卢纶","2026-08-05"],[35,"望洞庭 唐 刘禹锡","2026-08-06"],[36,"浪淘沙 唐 刘禹锡","2026-08-06"],[37,"赋得古原草送别 唐 白居易","2026-08-07"],[38,"池上 唐 白居易","2026-08-07"],[39,"忆江南 唐 白居易","2026-08-08"],[40,"小儿垂钓 唐 胡令能","2026-08-08"],[41,"悯农 唐 李绅","2026-08-09"],[42,"悯农 唐 李绅","2026-08-09"],[43,"江雪 唐 柳宗元","2026-08-10"],[44,"寻隐者不遇 唐 贾岛","2026-08-10"],[45,"山行 唐 杜牧","2026-08-11"],[46,"清明 唐 杜牧","2026-08-11"],[47,"江南春 唐 杜牧","2026-08-12"],[48,"蜂 唐 罗隐","2026-08-12"],[49,"江上渔者 宋 范仲淹","2026-08-13"],[50,"元日 宋 王安石","2026-08-13"],[51,"泊船瓜洲 宋 王安石","2026-08-14"],[52,"书湖阴先生壁 宋 王安石","2026-08-14"],[53,"六月二十七日望湖楼醉书 宋 苏轼","2026-08-15"],[54,"饮湖上初晴后雨 宋 苏轼","2026-08-15"],[55,"惠崇春江晚景 宋 苏轼","2026-08-16"],[56,"题西林壁 宋 苏轼","2026-08-16"],[57,"夏日绝句 宋 李清照","2026-08-17"],[58,"三衢道中 南宋 曾几","2026-08-17"],[59,"示儿 宋 陆游","2026-08-18"],[60,"秋夜将晓出篱门迎凉有感 宋 陆游","2026-08-18"],[61,"四时田园杂兴 宋 范成大","2026-08-19"],[62,"四时田园杂兴 宋 范成大","2026-08-19"],[63,"小池 宋 杨万里","2026-08-20"],[64,"晓出净慈寺送林子方 宋 杨万里","2026-08-20"],[65,"春日 宋 朱熹","2026-08-21"],[66,"观书有感 宋 朱熹","2026-08-21"],[67,"题临安邸 宋 林升","2026-08-22"],[68,"游园不值 宋 叶绍翁","2026-08-22"],[69,"乡村四月 宋 翁卷","2026-08-23"],[70,"墨梅 元 王冕","2026-08-23"],[71,"石灰吟 明 于谦","2026-08-24"],[72,"竹石 清 郑燮","2026-08-24"],[73,"所见 清 袁枚","2026-08-25"],[74,"村居 清 高鼎","2026-08-25"],[75,"己亥杂诗 清 龚自珍","2026-08-26"],[76,"诗经采薇节选 先秦","2026-08-26"],[76,"七步诗 三国魏 曹植","2026-08-27"],[77,"山中杂诗 南朝 吴均","2026-08-27"],[78,"宿建德江 唐 孟浩然","2026-08-28"],[79,"从军行 唐 王昌龄","2026-08-28"],[80,"独坐敬亭山 唐李白","2026-08-29"],[81,"秋浦歌 唐 李白","2026-08-29"],[82,"夜宿山寺 唐 李白","2026-08-30"],[83,"秋浦歌 唐 李白","2026-08-30"],[84,"峨眉山 月歌 唐李白","2026-08-31"],[85,"春夜洛城闻笛 唐 李白","2026-08-31"],[86,"闻王昌龄左迁龙标遥有此寄 唐 李白","2026-09-01"],[87,"望岳 唐 杜甫","2026-09-01"],[88,"春望 唐杜甫","2026-09-02"],[89,"闻官军收河南河北 唐 杜甫","2026-09-02"],[90,"赠花卿 唐 杜甫","2026-09-03"],[91,"江南逢李龟年 唐 杜甫","2026-09-03"],[92,"江畔独步寻花 唐 杜甫","2026-09-04"]];
+const POEM_DETAIL=[["汉乐府","汉","江南可采莲，莲叶何田田。鱼戏莲叶间。鱼戏莲叶东，鱼戏莲叶西，鱼戏莲叶南，鱼戏莲叶北。","江南又到了适宜采莲的季节，莲叶多么茂盛。鱼儿在莲叶间嬉戏，一会儿游到东，一会儿游到西，一会儿游到南，一会儿游到北。","乐府民歌，描绘采莲时鱼儿嬉戏的欢乐画面。"],["汉乐府","汉","青青园中葵，朝露待日晞。阳春布德泽，万物生光辉。常恐秋节至，焜黄华叶衰。百川东到海，何时复西归？少壮不努力，老大徒伤悲。","园中葵菜青青，晨露等待阳光晒干。春天散布恩泽，万物焕发光彩。常担心秋天来到，花叶枯黄凋零。百川东流入海，何时才能西归？年轻时不努力，年老只能空自悲伤。","劝诫珍惜时光、勤奋学习。"],["北朝民歌","北朝","敕勒川，阴山下。天似穹庐，笼盖四野。天苍苍，野茫茫，风吹草低见牛羊。","敕勒平原在阴山脚下。天空像圆顶帐篷，笼罩着四野。蓝天辽阔，草原茫茫，风吹草低处露出成群的牛羊。","描绘北方草原的辽阔壮丽。"],["骆宾王","唐","鹅，鹅，鹅，曲项向天歌。白毛浮绿水，红掌拨清波。","鹅，鹅，鹅，弯着脖子朝天欢叫。白毛浮在绿水上，红掌划动清波。","儿童视角的咏物诗，活泼生动。"],["李峤","唐","解落三秋叶，能开二月花。过江千尺浪，入竹万竿斜。","风能吹落秋天的树叶，能催开二月的春花。刮过江面掀起千尺浪，吹进竹林万竿竹竿倾斜。","咏风之作，写风的力量。"],["贺知章","唐","碧玉妆成一树高，万条垂下绿丝绦。不知细叶谁裁出，二月春风似剪刀。","高高的柳树像碧玉装扮，万条柳枝垂下绿丝带。不知细叶是谁裁出，二月的春风像剪刀。","咏柳赞美春天，比喻巧妙。"],["贺知章","唐","少小离家老大回，乡音无改鬓毛衰。儿童相见不相识，笑问客从何处来。","年少离家年老才回，乡音未变鬓发已白。儿童见我不相识，笑着问我从哪来。","久客还乡，感慨时光与陌生。"],["王之涣","唐","黄河远上白云间，一片孤城万仞山。羌笛何须怨杨柳，春风不度玉门关。","黄河蜿蜒直上白云间，一座孤城坐落在万仞高山。羌笛何必怨《杨柳》不青，春风吹不到玉门关外。","边塞诗，苍凉中见怨情。"],["王之涣","唐","白日依山尽，黄河入海流。欲穷千里目，更上一层楼。","夕阳依山落下，黄河奔流入海。想看尽千里风光，就要再登上一层楼。","登高望远，蕴含进取哲理。"],["孟浩然","唐","春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。","春夜睡得香不知天亮，处处听到鸟啼。回想昨夜风雨声，不知吹落多少花。","惜春之作，清新自然。"],["王翰","唐","葡萄美酒夜光杯，欲饮琵琶马上催。醉卧沙场君莫笑，古来征战几人回。","葡萄美酒盛在夜光杯，正要喝时琵琶催出征。醉卧沙场请莫笑，自古征战几人能回。","边塞豪饮，悲壮旷达。"],["王昌龄","唐","秦时明月汉时关，万里长征人未还。但使龙城飞将在，不教胡马度阴山。","秦汉以来的明月雄关，远征之人未归还。若有李广那样飞将，绝不让敌骑越过阴山。","边塞名篇，渴望良将保家卫国。"],["王昌龄","唐","寒雨连江夜入吴，平明送客楚山孤。洛阳亲友如相问，一片冰心在玉壶。","寒雨连江夜入吴地，清晨送友只留楚山孤。洛阳亲友若问起，我心如玉壶冰清。","送别诗，表坚贞清白之心。"],["王维","唐","空山不见人，但闻人语响。返景入深林，复照青苔上。","空山看不见人，只听见人语回响。夕阳返照深林，又洒在青苔上。","山水诗，以动衬静。"],["王维","唐","渭城朝雨浥轻尘，客舍青青柳色新。劝君更尽一杯酒，西出阳关无故人。","渭城晨雨润湿轻尘，客舍青青花柳一新。劝君再饮一杯酒，西出阳关难遇故人。","送别名作，情深意长。"],["王维","唐","独在异乡为异客，每逢佳节倍思亲。遥知兄弟登高处，遍插茱萸少一人。","独自在外做异乡客，每逢佳节更思亲人。遥想兄弟登高时，遍插茱萸少了我一人。","重阳思乡，千古名句。"],["李白","唐","床前明月光，疑是地上霜。举头望明月，低头思故乡。","床前洒满明月光，疑是地上白霜。抬头望明月，低头思念故乡。","思乡绝唱，浅显深情。"],["李白","唐","小时不识月，呼作白玉盘。又疑瑶台镜，飞在青云端。仙人垂两足，桂树何团团。白兔捣药成，问言与谁餐？","小时候不认识月亮，叫它白玉盘。又疑是瑶台仙镜，飞在白云边。仙人垂下双脚，桂树圆圆。白兔捣好药，问给谁吃？","以童趣写月，想象瑰丽。"],["李白","唐","日照香炉生紫烟，遥看瀑布挂前川。飞流直下三千尺，疑是银河落九天。","阳光照香炉峰生紫烟，远看瀑布像挂前川。水流直下三千尺，疑是银河落自九天。","夸张写景，气势磅礴。"],["李白","唐","李白乘舟将欲行，忽闻岸上踏歌声。桃花潭水深千尺，不及汪伦送我情。","李白乘船正要出发，忽听岸上踏歌之声。桃花潭水纵有千尺深，不及汪伦送别情。","借潭水写友情之深。"],["李白","唐","故人西辞黄鹤楼，烟花三月下扬州。孤帆远影碧空尽，唯见长江天际流。","老友黄鹤楼辞别，烟花三月去扬州。孤帆远影消逝天边，唯见长江向天际奔流。","送别名篇，景中寓情。"],["李白","唐","朝辞白帝彩云间，千里江陵一日还。两岸猿声啼不住，轻舟已过万重山。","清晨辞别白帝城在彩云间，千里江陵一日回还。两岸猿声啼叫不停，轻舟已越过万重山。","遇赦东归的轻快喜悦。"],["李白","唐","天门中断楚江开，碧水东流至此回。两岸青山相对出，孤帆一片日边来。","天门山被楚江劈开，碧水东流到此回旋。两岸青山相对耸出，一片孤帆从日边驶来。","写景壮美，气势开张。"],["高适","唐","千里黄云白日曛，北风吹雁雪纷纷。莫愁前路无知己，天下谁人不识君。","千里黄云遮暗白日，北风吹雁雪纷飞。莫愁前路没有知己，天下谁人不识君。","送别慰友，豪迈乐观。"],["杜甫","唐","迟日江山丽，春风花草香。泥融飞燕子，沙暖睡鸳鸯。","春日江山秀丽，春风花草飘香。泥土松软飞燕子，沙暖睡着鸳鸯。","写春景恬静优美。"],["杜甫","唐","好雨知时节，当春乃发生。随风潜入夜，润物细无声。野径云俱黑，江船火独明。晓看红湿处，花重锦官城。","好雨懂时节，春天才降临。随夜风悄悄来，滋润万物无声。野外云黑，江船灯明。清晨看湿红处，锦官城花沉甸甸。","春雨润物，喜悦之情。"],["杜甫","唐","迟日江山丽，春风花草香。泥融飞燕子，沙暖睡鸳鸯。","春日江山秀丽，春风花草飘香。泥土松软飞燕子，沙暖睡着鸳鸯。","写春景恬静优美。"],["杜甫","唐","黄师塔前江水东，春光懒困倚微风。桃花一簇开无主，可爱深红爱浅红？","黄师塔前江水东流，春光懒困倚微风。一簇桃花开无主，可爱深红还是浅红？","写赏花闲适，活泼生趣。"],["张继","唐","月落乌啼霜满天，江枫渔火对愁眠。姑苏城外寒山寺，夜半钟声到客船。","月落乌啼霜满天空，江枫渔火伴愁难眠。姑苏城外寒山寺，夜半钟声传到客船。","羁旅愁思，意境清远。"],["韦应物","唐","独怜幽草涧边生，上有黄鹂深树鸣。春潮带雨晚来急，野渡无人舟自横。","独爱涧边幽草生长，上有黄鹂深树鸣唱。春潮带雨傍晚湍急，野渡无人小船横漂。","写景恬淡，闲适之情。"],["孟郊","唐","慈母手中线，游子身上衣。临行密密缝，意恐迟迟归。谁言寸草心，报得三春晖。","慈母手中针线，游子身上衣服。临行密密缝补，怕儿迟归。谁说小草之心，报答得了春晖？","颂母爱，感人至深。"],["韩愈","唐","天街小雨润如酥，草色遥看近却无。最是一年春好处，绝胜烟柳满皇都。","京城小雨润如酥油，草色远看近却无。正是一年春最好，胜过烟柳满皇都。","写早春细腻清新。"],["张志和","唐","西塞山前白鹭飞，桃花流水鳜鱼肥。青箬笠，绿蓑衣，斜风细雨不须归。","西塞山前白鹭飞，桃花流水鳜鱼肥。青斗笠绿蓑衣，斜风细雨不想回。","渔父闲适，寄情山水。"],["卢纶","唐","月黑雁飞高，单于夜遁逃。欲将轻骑逐，大雪满弓刀。","月黑雁飞得高，单于夜里逃跑。正要率轻骑追，大雪落满弓刀。","边塞征战，紧张雄健。"],["刘禹锡","唐","湖光秋月两相和，潭面无风镜未磨。遥望洞庭山水色，白银盘里一青螺。","湖光秋月两相交融，潭面无风像未磨镜。远望洞庭山水，如白银盘里一青螺。","写洞庭湖恬静秀美。"],["刘禹锡","唐","九曲黄河万里沙，浪淘风簸自天涯。如今直上银河去，同到牵牛织女家。","九曲黄河夹万里沙，浪淘风簸来自天涯。如今直上银河去，同到牛郎织女家。","借黄河写豪迈想象。"],["白居易","唐","离离原上草，一岁一枯荣。野火烧不尽，春风吹又生。远芳侵古道，晴翠接荒城。又送王孙去，萋萋满别情。","原野草茂盛，一岁一枯荣。野火焚不尽，春风吹又生。远草侵古道，晴翠接荒城。又送友人去，满别情萋萋。","咏草送别，生命力顽强。"],["白居易","唐","小娃撑小艇，偷采白莲回。不解藏踪迹，浮萍一道开。","小孩撑小船，偷采白莲回。不懂藏踪迹，浮萍一路分开。","写孩童偷莲的童趣。"],["白居易","唐","江南好，风景旧曾谙。日出江花红胜火，春来江水绿如蓝。能不忆江南？","江南好，风景从前熟识。日出江花红胜火，春来江水绿如蓝。能不忆江南？","忆江南美景，赞美眷恋。"],["胡令能","唐","蓬头稚子学垂纶，侧坐莓苔草映身。路人借问遥招手，怕得鱼惊不应人。","蓬头小孩学钓鱼，侧坐莓苔草遮身。路人问路遥招手，怕惊鱼不敢应声。","写稚子垂钓的专注可爱。"],["李绅","唐","锄禾日当午，汗滴禾下土。谁知盘中餐，粒粒皆辛苦。","正午锄禾日头毒，汗水滴入禾下土。谁知盘中饭，粒粒皆辛苦。","悯农经典，警示珍惜粮食。"],["李绅","唐","锄禾日当午，汗滴禾下土。谁知盘中餐，粒粒皆辛苦。","正午锄禾日头毒，汗水滴入禾下土。谁知盘中饭，粒粒皆辛苦。","悯农经典，警示珍惜粮食。"],["柳宗元","唐","千山鸟飞绝，万径人踪灭。孤舟蓑笠翁，独钓寒江雪。","千山鸟飞尽，万路无人踪。孤舟蓑笠翁，独钓寒江雪。","孤寂清高，意境幽冷。"],["贾岛","唐","松下问童子，言师采药去。只在此山中，云深不知处。","松下问童子，说师父采药去。只在此山中，云深不知哪里。","寻隐者不遇，言有尽意无穷。"],["杜牧","唐","远上寒山石径斜，白云生处有人家。停车坐爱枫林晚，霜叶红于二月花。","远上寒山石径歪斜，白云生处有人家。停车因爱枫林晚，霜叶红过二月花。","写秋山枫叶，赞美秋色。"],["杜牧","唐","清明时节雨纷纷，路上行人欲断魂。借问酒家何处有，牧童遥指杏花村。","清明时节雨纷纷，路上行人魂欲断。借问酒家哪里有，牧童遥指杏花村。","清明羁旅，淡淡哀愁。"],["杜牧","唐","千里莺啼绿映红，水村山郭酒旗风。南朝四百八十寺，多少楼台烟雨中。","千里莺啼绿映红，水村山郭酒旗风。南朝四百八十寺，多少楼台烟雨中。","写江南春景，暗含感慨。"],["罗隐","唐","不论平地与山尖，无限风光尽被占。采得百花成蜜后，为谁辛苦为谁甜。","不论平地还是山尖，无限风光尽被占。采得百花酿成蜜，为谁辛苦为谁甜？","借蜂讽喻，发人深思。"],["范仲淹","宋","江上往来人，但爱鲈鱼美。君看一叶舟，出没风波里。","江上往来行人，只爱鲈鱼味美。请看一叶小舟，出没风浪之中。","写渔民艰辛，体恤民情。"],["王安石","宋","爆竹声中一岁除，春风送暖入屠苏。千门万户曈曈日，总把新桃换旧符。","爆竹声中旧岁除，春风送暖饮屠苏。千家万户朝阳里，总把新桃换旧符。","写春节除旧迎新。"],["王安石","宋","京口瓜洲一水间，钟山只隔数重山。春风又绿江南岸，明月何时照我还。","京口瓜洲一水相隔，钟山只隔几重山。春风又绿江南岸，明月何时照我还？","泊船怀乡，盼归之情。"],["王安石","宋","茅檐长扫净无苔，花木成畦手自栽。一水护田将绿绕，两山排闼送青来。","茅檐常扫无青苔，花木成行手自栽。一水护田绕绿意，两山推门送青来。","写闲居整洁，山水有情。"],["苏轼","宋","黑云翻墨未遮山，白雨跳珠乱入船。卷地风来忽吹散，望湖楼下水如天。","黑云如墨未遮山，白雨跳珠乱入船。卷地风来忽吹散，望湖楼下水平如天。","写西湖骤雨乍晴。"],["苏轼","宋","水光潋滟晴方好，山色空蒙雨亦奇。欲把西湖比西子，淡妆浓抹总相宜。","水光闪动晴正好，山色迷蒙雨亦奇。若把西湖比西子，淡妆浓抹总相宜。","咏西湖，比喻传神。"],["苏轼","宋","竹外桃花三两枝，春江水暖鸭先知。蒌蒿满地芦芽短，正是河豚欲上时。","竹外桃花三两枝，春江水暖鸭先知。蒌蒿满地芦芽短，正是河豚将上时。","题画写早春生机。"],["苏轼","宋","横看成岭侧成峰，远近高低各不同。不识庐山真面目，只缘身在此山中。","横看是岭侧成峰，远近高低各不同。不识庐山真面目，只因身在此山中。","借景说理，富含哲理。"],["李清照","宋","生当作人杰，死亦为鬼雄。至今思项羽，不肯过江东。","活着做人中豪杰，死也为鬼中英雄。至今思念项羽，不肯渡江回江东。","咏史抒怀，气概豪迈。"],["曾几","宋","梅子黄时日日晴，小溪泛尽却山行。绿阴不减来时路，添得黄鹂四五声。","梅黄时节天天晴，小溪游尽改走山。绿阴不比来时少，添得黄鹂四五声。","写初夏山行闲适。"],["陆游","宋","死去元知万事空，但悲不见九州同。王师北定中原日，家祭无忘告乃翁。","本知死后万事空，只悲不见九州同。待王师收复中原日，家祭莫忘告乃翁。","临终示儿，爱国至诚。"],["陆游","宋","三万里河东入海，五千仞岳上摩天。遗民泪尽胡尘里，南望王师又一年。","三万里黄河东入海，五千仞华山耸摩天。遗民泪尽胡尘里，南望王师又一年。","忧国忧民，悲愤深沉。"],["范成大","宋","梅子金黄杏子肥，麦花雪白菜花稀。日长篱落无人过，惟有蜻蜓蛱蝶飞。","梅子金黄杏子肥，麦花雪白菜花稀。日长篱落无人过，只有蜻蜓蝴蝶飞。","写初夏田园静美。"],["范成大","宋","梅子金黄杏子肥，麦花雪白菜花稀。日长篱落无人过，惟有蜻蜓蛱蝶飞。","梅子金黄杏子肥，麦花雪白菜花稀。日长篱落无人过，只有蜻蜓蝴蝶飞。","写初夏田园静美。"],["杨万里","宋","泉眼无声惜细流，树阴照水爱晴柔。小荷才露尖尖角，早有蜻蜓立上头。","泉眼无声惜细流，树阴照水爱晴柔。小荷才露尖尖角，早有蜻蜓立上头。","写小池初夏清新。"],["杨万里","宋","毕竟西湖六月中，风光不与四时同。接天莲叶无穷碧，映日荷花别样红。","毕竟西湖六月中，风光不与四季同。连天莲叶无穷碧，映日荷花别样红。","写西湖荷花壮美。"],["朱熹","宋","胜日寻芳泗水滨，无边光景一时新。等闲识得东风面，万紫千红总是春。","良辰寻芳泗水滨，无边光景一时新。轻易识得春风面，万紫千红总是春。","寓理于景，写春之生机。"],["朱熹","宋","半亩方塘一鉴开，天光云影共徘徊。问渠那得清如许？为有源头活水来。","半亩方塘像明镜，天光云影共徘徊。问它怎得清如许？为有源头活水来。","以塘喻学，强调源头活水。"],["林升","宋","山外青山楼外楼，西湖歌舞几时休？暖风熏得游人醉，直把杭州作汴州。","山外青山楼外楼，西湖歌舞几时休？暖风熏得游人醉，直把杭州当汴州。","讽南宋偏安，忧国之情。"],["叶绍翁","宋","应怜屐齿印苍苔，小扣柴扉久不开。春色满园关不住，一枝红杏出墙来。","应怜木屐印苍苔，轻敲柴门久不开。春色满园关不住，一枝红杏出墙来。","写游园所见，生机勃发。"],["翁卷","宋","绿遍山原白满川，子规声里雨如烟。乡村四月闲人少，才了蚕桑又插田。","山原绿遍水白满川，子规声里雨如烟。乡村四月闲人少，才了蚕桑又插田。","写江南农忙景象。"],["王冕","元","我家洗砚池头树，朵朵花开淡墨痕。不要人夸好颜色，只留清气满乾坤。","我家洗砚池边树，朵朵花开淡墨痕。不要人夸好颜色，只留清气满乾坤。","借梅自喻，品格高洁。"],["于谦","明","千锤万凿出深山，烈火焚烧若等闲。粉骨碎身浑不怕，要留清白在人间。","千锤万凿出深山，烈火焚烧若等闲。粉骨碎身全不怕，要留清白在人间。","借石灰明志，坚贞不屈。"],["郑燮","清","咬定青山不放松，立根原在破岩中。千磨万击还坚劲，任尔东西南北风。","咬定青山不放松，立根原在破岩中。千磨万击还坚劲，任尔东西南北风。","咏竹明志，坚韧顽强。"],["袁枚","清","牧童骑黄牛，歌声振林樾。意欲捕鸣蝉，忽然闭口立。","牧童骑黄牛，歌声震林樾。想捉鸣蝉，忽然闭口站立。","写牧童天真灵动。"],["高鼎","清","草长莺飞二月天，拂堤杨柳醉春烟。儿童散学归来早，忙趁东风放纸鸢。","草长莺飞二月天，拂堤杨柳醉春烟。儿童放学归来早，忙趁东风放纸鸢。","写乡村早春童趣。"],["龚自珍","清","九州生气恃风雷，万马齐喑究可哀。我劝天公重抖擞，不拘一格降人材。","九州生机靠风雷，万马齐喑实可哀。我劝天公重抖擞，不拘一格降人才。","呼吁变革，渴求人才。"],["佚名","先秦","昔我往矣，杨柳依依。今我来思，雨雪霏霏。行道迟迟，载渴载饥。我心伤悲，莫知我哀。","从前出征时，杨柳轻轻飘。如今我归来，大雪纷纷飞。路途迟缓，又渴又饥。我心悲伤，无人知我哀。","征人归途悲苦，情景交融。"],["曹植","三国","煮豆燃豆萁，豆在釜中泣。本是同根生，相煎何太急？","煮豆烧豆秸，豆在锅里泣。本是同根生，相煎何太急？","以豆萁喻兄弟相逼，含蓄沉痛。"],["吴均","南朝","山际见来烟，竹中窥落日。鸟向檐上飞，云从窗里出。","山边望见来烟，竹中窥见落日。鸟向檐上飞，云从窗里出。","写山居幽静有趣。"],["孟浩然","唐","移舟泊烟渚，日暮客愁新。野旷天低树，江清月近人。","移船停泊烟渚，日暮又添客愁。原野空旷天低于树，江水清清月近人。","写羁旅暮愁，清旷悠远。"],["王昌龄","唐","青海长云暗雪山，孤城遥望玉门关。黄沙百战穿金甲，不破楼兰终不还。","青海长云遮暗雪山，孤城遥望玉门关。黄沙百战磨穿金甲，不破楼兰终不还。","边塞壮志，誓守国土。"],["李白","唐","众鸟高飞尽，孤云独去闲。相看两不厌，只有敬亭山。","众鸟高飞尽，孤云独去闲。相看两不厌，只有敬亭山。","写独坐之静，物我相融。"],["李白","唐","炉火照天地，红星乱紫烟。赧郎明月夜，歌曲动寒川。","炉火照亮天地，红星乱入紫烟。炉工映红明月夜，歌声震动寒川。","写冶炼场景，劳动赞歌。"],["李白","唐","危楼高百尺，手可摘星辰。不敢高声语，恐惊天上人。","高楼高百尺，手可摘星辰。不敢高声语，怕惊天上人。","夸张写楼高，童趣奇想。"],["李白","唐","炉火照天地，红星乱紫烟。赧郎明月夜，歌曲动寒川。","炉火照亮天地，红星乱入紫烟。炉工映红明月夜，歌声震动寒川。","写冶炼场景，劳动赞歌。"],["李白","唐","峨眉山月半轮秋，影入平羌江水流。夜发清溪向三峡，思君不见下渝州。","峨眉山月半轮秋，影入平羌江水流。夜发清溪向三峡，思君不见下渝州。","写舟行思友，景中含情。"],["李白","唐","谁家玉笛暗飞声，散入春风满洛城。此夜曲中闻折柳，何人不起故园情。","谁家玉笛暗飞声，散入春风满洛城。今夜曲中闻《折柳》，谁不起故园情？","闻笛思乡，情动全城。"],["李白","唐","杨花落尽子规啼，闻道龙标过五溪。我寄愁心与明月，随君直到夜郎西。","杨花落尽子规啼，闻道龙标过五溪。我把愁心寄明月，随君直到夜郎西。","寄友慰勉，情深意厚。"],["杜甫","唐","岱宗夫如何？齐鲁青未了。造化钟神秀，阴阳割昏晓。荡胸生曾云，决眦入归鸟。会当凌绝顶，一览众山小。","泰山怎么样？齐鲁青翠不尽。造化聚神奇，阴阳分昏晓。胸荡层云，目送归鸟。定要登绝顶，一览众山小。","望岳抒怀，雄心勃勃。"],["杜甫","唐","国破山河在，城春草木深。感时花溅泪，恨别鸟惊心。烽火连三月，家书抵万金。白头搔更短，浑欲不胜簪。","国破山河在，城春草木深。感时花溅泪，恨别鸟惊心。战火连三月，家书抵万金。白发越搔越短，简直插不住簪。","忧国伤时，沉郁顿挫。"],["杜甫","唐","剑外忽传收蓟北，初闻涕泪满衣裳。却看妻子愁何在，漫卷诗书喜欲狂。白日放歌须纵酒，青春作伴好还乡。即从巴峡穿巫峡，便下襄阳向洛阳。","剑外忽传收复蓟北，初闻泪满衣裳。回头看妻儿愁何在，胡乱卷书喜欲狂。白日放歌须纵酒，春光伴我好还乡。就从巴峡穿巫峡，下襄阳向洛阳。","闻胜喜极，归心似箭。"],["杜甫","唐","锦城丝管日纷纷，半入江风半入云。此曲只应天上有，人间能得几回闻。","锦城音乐日纷纷，半入江风半入云。此曲只应天上有，人间能得几回闻。","赞音乐之美，亦含讽意。"],["杜甫","唐","岐王宅里寻常见，崔九堂前几度闻。正是江南好风景，落花时节又逢君。","岐王宅里常相见，崔九堂前几回闻。正是江南好风景，落花时节又逢君。","重逢感慨，暗伤世运。"],["杜甫","唐","黄师塔前江水东，春光懒困倚微风。桃花一簇开无主，可爱深红爱浅红？","黄师塔前江水东流，春光懒困倚微风。一簇桃花开无主，可爱深红还是浅红？","写赏花闲适，活泼生趣。"]];
+
+const KEY="summer_study_station_v2";
+const REVIEW_KEYS=['m5','m30','h12','d1','d2','d4','d7','d15','m1','m3'];
+const REVIEW_LABELS=['5分钟','30分钟','12小时','1天','2天','4天','7天','15天','1个月','3个月'];
+const REVIEW_INTERVAL=[0,0,0,1,2,4,7,15,30,90];
+const PTS={daily:5, task:10, poem:10, review:2};
+let viewDate=todayStr();
+
+const slots=[
+  {k:"recite",t:"背诵古诗课文",s:"8:30-9:30"},
+  {k:"chinese",t:"语文",s:"10:00-11:00"},
+  {k:"math",t:"数学",s:"10:00-11:00"},
+  {k:"english",t:"英语",s:"10:00-11:00"},
+  {k:"write",t:"学而思写作课",s:"11:20-12:10"},
+  {k:"sport",t:"运动",s:"14:00-15:00"},
+  {k:"read",t:"阅读",s:"15:30-16:30"},
+  {k:"book",t:"读课外书单",s:"16:40-17:30"},
+  {k:"diary",t:"周记(每周1篇)",s:""},
+  {k:"free",t:"晚上自由安排",s:""},
+  {k:"other",t:"其他",s:""}
+];
+const weeks=[
+  {name:"第三周",days:["7月19日","7月20日","7月21日","7月22日","7月23日","7月24日","7月25日","7月26日"]},
+  {name:"第四周",days:["7月27日","7月28日","7月29日","7月30日","7月31日","8月1日","8月2日","8月3日"]}
+];
+
+function buildPoems(){
+  return POEM_SEED.map((p,i)=>{
+    const dt=(POEM_DETAIL&&POEM_DETAIL[i])||[p[1],'',p[1],'',''];
+    return {seq:p[0],name:p[1],date:p[2],author:dt[0],dynasty:dt[1],text:dt[2],trans:dt[3],note:dt[4],
+      reviews:REVIEW_KEYS.reduce((o,k)=>(o[k]=false,o),{})};
+  });
+}
+function defaultRewards(){
+  return [
+    {id:'r1',emoji:'🍦',name:'奖励一个冰淇淋',cost:30},
+    {id:'r2',emoji:'🎮',name:'妈妈陪我玩游戏',cost:50},
+    {id:'r3',emoji:'📺',name:'看一集喜欢的动画片',cost:20},
+    {id:'r4',emoji:'🎁',name:'买一个喜欢很久的东西',cost:200},
+    {id:'r5',emoji:'🛝',name:'去公园 / 游乐场玩',cost:40}
+  ];
+}
+function defaultData(){
+  return {
+    subjects:{
+      chinese:{name:"语文",emoji:"📖",color:"var(--chinese)",raw:"#e8543f",
+        goals:["背诵并默写三年级重点古诗与课文","每天阅读课外书 30 分钟，积累好词好句","每周完成 1 篇周记，提升写作表达","巩固字词基础，预习四年级上册生字","按艾宾浩斯曲线背诵小学古诗（见「古诗背诵」）"],
+        tasks:[
+          {t:"背诵古诗《咏柳》《春日》《惠崇春江晚景》等",done:false},
+          {t:"每日阅读课外书单 30 分钟并摘抄好句",done:false},
+          {t:"完成本周周记 1 篇",done:false},
+          {t:"默写三年级重点生字词",done:false},
+          {t:"预习四年级上册生字（每日 10 个）",done:false},
+          {t:"做 1 篇阅读理解专项练习",done:false}
+        ]},
+      math:{name:"数学",emoji:"🔢",color:"var(--math)",raw:"#2f8fd6",
+        goals:["复习三年级计算与应用题","预习四年级「大数的认识」与运算","每日计算打卡，提升准确率","整理错题本，攻克薄弱点"],
+        tasks:[
+          {t:"复习三年级乘除法竖式计算",done:false},
+          {t:"每日口算/计算练习 20 题",done:false},
+          {t:"预习四年级「大数的认识」",done:false},
+          {t:"完成应用题专项练习 1 套",done:false},
+          {t:"整理本周错题并订正",done:false}
+        ]},
+      english:{name:"英语",emoji:"🔤",color:"var(--english)",raw:"#27a567",
+        goals:["巩固三年级单词与句型","每天听读 15 分钟，培养语感","预习四年级上册课文","积累日常口语表达"],
+        tasks:[
+          {t:"复习三年级核心单词表",done:false},
+          {t:"每日英语听读 15 分钟",done:false},
+          {t:"背诵常用句型 5 组",done:false},
+          {t:"预习四年级上册课文 Unit 1",done:false},
+          {t:"每周朗读一篇英语小故事",done:false}
+        ]}
+    },
+    daily:{},
+    poems:buildPoems(),
+    rewards:defaultRewards(),
+    redeemed:[],
+    poemBase:'2026-07-20',
+    records:{}
+  };
+}
+
+let D=load();
+function migrate(d){
+  const stored = Array.isArray(d.poems) ? d.poems : [];
+  const byKey = {};
+  stored.forEach(p=>{ if(p&&p.name) byKey[p.name+'|'+p.date] = p; });
+  d.poems = buildPoems().map(pm=>{
+    const old = byKey[pm.name+'|'+pm.date];
+    if(old && old.reviews) pm.reviews = old.reviews;
+    return pm;
+  });
+  if(!Array.isArray(d.rewards)) d.rewards=defaultRewards();
+  if(!Array.isArray(d.redeemed)) d.redeemed=[];
+  if(!d.poemBase) d.poemBase='2026-07-20';
+  return d;
+}
+function load(){
+  try{const s=localStorage.getItem(KEY);if(s)return migrate(JSON.parse(s));}catch(e){}
+  return defaultData();
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(D));
+  const el=document.getElementById('save-status');if(el)el.textContent='✓ 已保存 '+new Date().toLocaleTimeString();}
+
+/* ---------- points ---------- */
+function earnedPoints(){
+  let p=0;
+  Object.values(D.daily).forEach(d=>{ if(d) Object.keys(d).forEach(k=>{
+    if(k==='custom'){ (d.custom||[]).forEach(c=>{ if(c&&c.done)p+=PTS.daily; }); }
+    else if(k!=='eval'&&k!=='note'&&d[k]) p+=PTS.daily;
+  }); });
+  ['chinese','math','english'].forEach(k=>D.subjects[k].tasks.forEach(t=>{if(t.done)p+=PTS.task;}));
+  (D.poems||[]).forEach(pm=>{ if(pm.reviews){ if(pm.reviews.m5)p+=PTS.poem; REVIEW_KEYS.forEach((k,i)=>{ if(i>0&&pm.reviews[k])p+=PTS.review; }); } });
+  return p;
+}
+function spentPoints(){return (D.redeemed||[]).reduce((s,r)=>s+(+r.cost||0),0);}
+function availPoints(){return earnedPoints()-spentPoints();}
+function updatePoints(){
+  const a=availPoints();
+  const ap=document.getElementById('avail');const ab=document.getElementById('avail-big');
+  if(ap)ap.textContent=a; if(ab)ab.textContent=a;
+  const pill=document.getElementById('points-pill');
+  if(pill){pill.classList.remove('pulse');void pill.offsetWidth;pill.classList.add('pulse');}
+  updateBannerStats();
+}
+function studyDays(){
+  let n=0;
+  Object.entries(D.daily).forEach(([ds,d])=>{
+    if(!d)return;let done=false;
+    ['recite','chinese','write','read','book','diary'].forEach(k=>{ if(d[k])done=true; });
+    (d.custom||[]).forEach(c=>{ if(c&&c.done)done=true; });
+    if(done)n++;
+  });
+  return n;
+}
+function masteredPoems(){
+  return (D.poems||[]).filter(pm=>pm.reviews&&pm.reviews.m5).length;
+}
+function updateBannerStats(){
+  const sd=document.getElementById('streak-days');
+  const pm=document.getElementById('poems-mastered');
+  if(sd)sd.textContent=studyDays();
+  if(pm)pm.textContent=masteredPoems();
+}
+
+/* ---------- date / day-nav ---------- */
+function ymd(ds){if(!ds||!ds.includes('-'))return null;const [y,m,d]=ds.split('-').map(Number);return new Date(y,m-1,d,12);}
+function addDays(ds,n){const t=ymd(ds);if(!t)return null;t.setDate(t.getDate()+n);return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;}
+function todayStr(){const t=new Date();return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;}
+const WD=['周日','周一','周二','周三','周四','周五','周六'];
+function dateMeta(ds){const d=ymd(ds);const wd=d?WD[d.getDay()]:'';let week='';weeks.forEach(w=>{if(w.days.includes(ds))week=w.name;});return {week,wd};}
+function dayNavHTML(){
+  const m=dateMeta(viewDate);
+  return `<div class="daynav">
+    <button onclick="shiftView(-1)">‹ 前一天</button>
+    <div class="dlabel"><b>${viewDate}</b> ${m.wd} ${m.week?'· '+m.week:''}</div>
+    <button onclick="shiftView(1)">后一天 ›</button>
+    <button class="today-btn" onclick="goToday()">今天</button>
+  </div>`;
+}
+function shiftView(n){viewDate=addDays(viewDate,n)||viewDate;renderActiveView();}
+function goToday(){viewDate=todayStr();renderActiveView();}
+function renderActiveView(){const t=document.querySelector('#tabs button.on').dataset.tab;
+  if(t==='chinese')renderChinese();
+  else if(t==='math'||t==='english')renderSubject(t);
+  else if(t==='poems')renderPoems();
+  else if(t==='daily')renderDaily();
+  else if(t==='overview')renderOverview();}
+
+function todayReviewKey(pm,ds){if(!pm.date)return null;for(let i=0;i<REVIEW_KEYS.length;i++){if(addDays(pm.date,REVIEW_INTERVAL[i])===ds)return REVIEW_KEYS[i];}return null;}
+function poemsForDate(ds){return (D.poems||[]).filter(pm=>todayReviewKey(pm,ds)!==null);}
+function reviewLabelFor(pm,ds){const k=todayReviewKey(pm,ds);if(!k)return '';return REVIEW_LABELS[REVIEW_KEYS.indexOf(k)]+'复习';}
+
+/* ---------- TABS ---------- */
+document.getElementById("tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  const tab=b.dataset.tab;
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("on"));
+  document.getElementById("panel-"+tab).classList.add("on");
+  if(tab==="overview")renderOverview();
+  if(tab==="chinese")renderChinese();
+  if(["math","english"].includes(tab))renderSubject(tab);
+  if(tab==="poems")renderPoems();
+  if(tab==="daily")renderDaily();
+  if(tab==="rewards")renderRewards();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+/* ---------- OVERVIEW ---------- */
+function subStat(key){const s=D.subjects[key];const total=s.tasks.length;const done=s.tasks.filter(t=>t.done).length;
+  return {total,done,pct:total?Math.round(done/total*100):0};}
+function renderOverview(){
+  const p=document.getElementById("panel-overview");
+  const ds=viewDate;const m=dateMeta(ds);
+  const d=D.daily[ds]||{};
+  const timed=slots.filter(s=>s.s);
+  const items=timed.map(sl=>{
+    const on=!!d[sl.k];
+    return `<li><span class="chk ${on?'done':''}" onclick="toggleDaily('${ds}','${sl.k}')">${on?'✓':''}</span>
+      <span class="li-txt ${on?'done':''}">${esc(sl.t)} <small style="color:#b0b0bd">(${sl.s})</small></span></li>`;
+  }).join('');
+  p.innerHTML=`<div class="sec">
+    <h2>📅 当日日程 <span class="badge">${ds} ${m.wd} ${m.week?'· '+m.week:''}</span></h2>
+    ${dayNavHTML()}
+    <div style="font-size:14px;font-weight:700;margin:6px 0 4px">有时间计划的当日日程（点方框完成，+5 积分）</div>
+    <ul class="list">${items||'<li><span class="li-txt" style="color:var(--muted)">今日没有带时间的安排项</span></li>'}</ul>
+  </div>`;
+  let tot=0,dn=0;
+  ["chinese","math","english"].forEach(k=>{tot+=D.subjects[k].tasks.length;dn+=D.subjects[k].tasks.filter(t=>t.done).length;});
+  const pct=tot?Math.round(dn/tot*100):0;
+  const ob=document.getElementById("o-bar");if(ob)ob.style.width=pct+"%";
+  const ol=document.getElementById("o-label");if(ol)ol.textContent=`${dn} / ${tot}（${pct}%）`;
+  updatePoints();
+}
+
+/* ---------- SUBJECT (语文含按天视图) ---------- */
+function renderChinese(){
+  const p=document.getElementById("panel-chinese");
+  const ds=viewDate;const m=dateMeta(ds);
+  const d=D.daily[ds]||{};
+  const showSlots=['recite','chinese','write','read','book','diary'];
+  const items=showSlots.map(k=>{
+    const slot=slots.find(s=>s.k===k);const on=d[k]?'on':'';const mark=on?'✓':'';
+    return `<li><span class="chk ${on}" onclick="toggleDaily('${ds}','${k}')">${mark}</span>
+      <span class="li-txt ${on?'done':''}">${esc(slot.t)}${slot.s?` <small style="color:#b0b0bd">(${slot.s})</small>`:''}</span></li>`;
+  }).join('');
+  const custom=(d.custom||[]).map((c,i)=>{
+    const on=c.done?'on':'';const mark=on?'✓':'';
+    return `<li><span class="chk ${on}" onclick="toggleChineseCustom('${ds}',${i})">${mark}</span>
+      <span class="li-txt ${on?'done':''}">${esc(c.t)}</span>
+      <button class="del" title="删除" onclick="delChineseCustom('${ds}',${i})">✕</button></li>`;
+  }).join('');
+  const customHtml = custom || `<li><span class="li-txt" style="color:var(--muted)">暂无自定内容，在下方添加一条吧～</span></li>`;
+  p.innerHTML=`<div class="sec">
+    <h2>📖 语文 · 当日学习内容 <span class="badge">${ds} ${m.wd}</span></h2>
+    ${dayNavHTML()}
+    <div style="font-size:14px;font-weight:700;margin:6px 0 4px">点方框即完成当日学习内容（+5 积分）</div>
+    <ul class="list">${items}</ul>
+    <div style="font-size:14px;font-weight:700;margin:14px 0 4px">📝 我的自定内容 <small style="font-weight:400;color:#b0b0bd">（当天有效，可添加 / 删减）</small></div>
+    <ul class="list" id="chinese-custom-list">${customHtml}</ul>
+    <div class="add-row"><input id="chinese-custom-in" placeholder="添加一条自定语文内容…" onkeydown="if(event.key==='Enter')addChineseCustom('${ds}')" /><button onclick="addChineseCustom('${ds}')">+ 添加</button></div>
+  </div>`;
+}
+function chineseDayView(){
+  const m=dateMeta(viewDate);
+  const d=D.daily[viewDate]||{};
+  const showSlots=['recite','chinese','write','read','book','diary'];
+  let items='';
+  showSlots.forEach(k=>{
+    const slot=slots.find(s=>s.k===k);const on=d[k]?'on':'';const mark=on?'✓':'';
+    items+=`<li><span class="chk ${on}" onclick="toggleDaily('${viewDate}','${k}')">${mark}</span>
+      <span class="li-txt ${on?'done':''}">${slot.t}${slot.s?` <small style="color:#b0b0bd">(${slot.s})</small>`:''}</span></li>`;
+  });
+  const todays=poemsForDate(viewDate);
+  let poemHtml;
+  if(todays.length){
+    poemHtml='<ul class="list" style="margin-top:6px">'+todays.map(pm=>{
+      const tag=pm.date===viewDate?'新背':reviewLabelFor(pm,viewDate);
+      return `<li><span class="chk done" style="border-color:var(--poem);background:var(--poem);font-size:11px">诗</span>
+        <span class="li-txt"><b>${esc(pm.name)}</b> <small style="color:var(--muted)">· ${tag}</small>
+        <button class="del" style="margin-left:6px;color:var(--poem)" onclick="gotoPoem(${pm.seq})">去背诵 ›</button></span></li>`;
+    }).join('')+'</ul>';
+  } else poemHtml=`<div style="color:var(--muted);font-size:13px;margin-top:6px">今日无固定古诗复习安排，可在「古诗背诵」里自选一首练习。</div>`;
+  return `<div class="sec">
+    <h2>📅 今日学习安排 <span class="badge">${viewDate}</span></h2>
+    ${dayNavHTML()}
+    <div style="font-size:14px;font-weight:700;margin:6px 0 4px">当日学习内容（点方框完成，+5 积分）</div>
+    <ul class="list">${items}</ul>
+    <div style="font-size:14px;font-weight:700;margin:14px 0 0">今日古诗背诵</div>
+    ${poemHtml}
+  </div>`;
+}
+function renderSubject(key){
+  const s=D.subjects[key];const p=document.getElementById("panel-"+key);
+  p.style.setProperty("--c",s.color);const st=subStat(key);
+  p.innerHTML=`<div class="sec">
+    <h2>${s.emoji} ${s.name} · 学习内容 <span class="badge">勾选 +10 积分</span></h2>
+    <div class="hint">勾选后记录完成日期，并汇总到积分与完成进度。</div>
+    <div class="progress-big"><i style="width:${st.pct}%"></i></div>
+    <div class="pstats"><span>已完成 ${st.done} 项</span><span>共 ${st.total} 项 · ${st.pct}%</span></div>
+    <ul class="list" id="${key}-tasks" style="margin-top:10px"></ul>
+    <div class="add-row"><input id="${key}-task-in" placeholder="添加一条学习内容…" /><button onclick="addTask('${key}')">+ 添加</button></div>
+  </div>`;
+  const tl=document.getElementById(key+"-tasks");
+  s.tasks.forEach((t,i)=>{
+    const li=document.createElement("li");
+    const date=D.records[key+"#"+i]?`<span class="date">完成于 ${D.records[key+"#"+i]}</span>`:"";
+    li.innerHTML=`<span class="chk ${t.done?'done':''}" >${t.done?'✓':''}</span>
+      <span class="li-txt ${t.done?'done':''}">${esc(t.t)}${date}</span><button class="del" title="删除">✕</button>`;
+    li.querySelector(".chk").onclick=()=>toggleTask(key,i);
+    li.querySelector(".del").onclick=()=>{s.tasks.splice(i,1);delete D.records[key+"#"+i];save();renderSubject(key);};
+    tl.appendChild(li);
+  });
+  if(!s.tasks.length)tl.innerHTML=`<li><span class="li-txt" style="color:var(--muted)">暂无内容，在下方添加一条吧～</span></li>`;
+}
+function mkRec(txt,date){const li=document.createElement("li");li.className="rec-item";
+  li.innerHTML=`<span>${esc(txt)}</span><span class="when">${date}</span>`;return li;}
+function toggleTask(key,i){
+  const task=D.subjects[key].tasks[i];task.done=!task.done;
+  const id=key+"#"+i;
+  if(task.done)D.records[id]=today();else delete D.records[id];
+  save();renderSubject(key);renderOverview();updatePoints();
+}
+function toggleDaily(date,slot){
+  D.daily[date]=D.daily[date]||{};
+  const was=D.daily[date][slot];D.daily[date][slot]=!was;save();
+  renderActiveView();updatePoints();
+  if(!was)toast('完成 +'+PTS.daily+' 积分 🪙');
+}
+function addGoal(key){const inp=document.getElementById(key+"-goal-in");const v=inp.value.trim();
+  if(!v)return;D.subjects[key].goals.push(v);inp.value="";save();renderSubject(key);}
+function addTask(key){const inp=document.getElementById(key+"-task-in");const v=inp.value.trim();
+  if(!v)return;D.subjects[key].tasks.push({t:v,done:false});inp.value="";save();renderSubject(key);renderOverview();updatePoints();}
+function addChineseCustom(ds){
+  const inp=document.getElementById("chinese-custom-in");const v=inp.value.trim();
+  if(!v)return;
+  D.daily[ds]=D.daily[ds]||{};D.daily[ds].custom=D.daily[ds].custom||[];
+  D.daily[ds].custom.push({t:v,done:false});inp.value="";save();renderChinese();updatePoints();
+}
+function toggleChineseCustom(ds,i){
+  const arr=(D.daily[ds]&&D.daily[ds].custom)||[];const c=arr[i];if(!c)return;
+  const was=c.done;c.done=!was;save();renderChinese();updatePoints();
+  if(!was)toast('完成 +'+PTS.daily+' 积分 🪙');
+}
+function delChineseCustom(ds,i){
+  const arr=(D.daily[ds]&&D.daily[ds].custom)||[];if(!arr[i])return;
+  arr.splice(i,1);save();renderChinese();updatePoints();
+}
+
+/* ---------- POEMS ---------- */
+function poemCard(pm){
+  const idx=D.poems.indexOf(pm);
+  const k=todayReviewKey(pm,viewDate);
+  const doneToday = k? pm.reviews[k] : pm.reviews.m5;
+  const tag = pm.date===viewDate?'新背':reviewLabelFor(pm,viewDate);
+  return `<div class="poem-card">
+    <div class="pc-head">
+      <div><div class="pc-title">《${esc(pm.name)}》</div>
+      <div class="pc-author">${esc(pm.dynasty||'')}·${esc(pm.author||'')}</div></div>
+      <div class="pc-badge">${tag}</div>
+    </div>
+    <div class="pc-text">${esc(pm.text).replace(/\n/g,'<br>')}</div>
+    <div class="pc-note"><b>释义：</b>${esc(pm.note)}</div>
+    <div class="pc-trans"><b>诗文翻译：</b>${esc(pm.trans)}</div>
+    <div class="pc-actions">
+      <button class="pc-btn read" onclick="speak(${idx})">🔊 跟读</button>
+      <button class="pc-btn rec" onclick="recitePoem(${idx})">${doneToday?'✅ 今日已背':'✅ 背诵'}</button>
+    </div>
+  </div>`;
+}
+function renderPoems(){
+  const todays=poemsForDate(viewDate);
+  const cards = todays.length
+    ? todays.map(poemCard).join('')
+    : `<div class="empty">📭 ${viewDate} 没有按艾宾浩斯曲线需要背诵的古诗。点「今天」回到当天，或翻到其它日期看看～</div>`;
+  const p=document.getElementById("panel-poems");
+  p.innerHTML=`<div class="sec">
+    <h2>📜 古诗背诵 · 艾宾浩斯复习 <span class="badge">语文项目</span></h2>
+    <div class="hint">按遗忘曲线规律复习：新诗当天及之后多个时间点回头巩固。🔊 跟读用标准普通话朗读，✅ 背诵记下当日打卡。</div>
+    ${dayNavHTML()}
+    <div style="font-size:14px;font-weight:700;margin:6px 0 10px">📖 当日需背诵的古诗（${todays.length} 首）</div>
+    <div class="poem-cards">${cards}</div>
+  </div>`;
+}
+function renderPoemTable(ds){
+  const poems=D.poems||[];
+  let head=`<thead><tr><th class="seq">#</th><th style="text-align:left">古诗</th><th>起始日</th>`;
+  REVIEW_LABELS.forEach(l=>head+=`<th>${l}</th>`);head+=`</tr></thead>`;
+  let body="<tbody>";
+  poems.forEach((pm,idx)=>{
+    body+=`<tr><td class="seq">${pm.seq}</td><td class="name">${esc(pm.name)}</td><td>${pm.date||'—'}</td>`;
+    REVIEW_KEYS.forEach((k,ri)=>{
+      const done=pm.reviews[k];let due=false;
+      if(pm.date){const dueStr=addDays(pm.date,REVIEW_INTERVAL[ri]);if(dueStr===ds&&!done)due=true;}
+      body+=`<td><div class="rchk ${done?'done':''} ${due?'due':''}" data-idx="${idx}" data-k="${k}">${done?'✓':''}</div></td>`;
+    });
+    body+="</tr>";
+  });
+  body+="</tbody>";
+  const tb=document.getElementById("poem-table");
+  if(tb){tb.innerHTML=head+body;
+    tb.querySelectorAll(".rchk").forEach(c=>c.onclick=()=>{
+      const i=+c.dataset.idx,k=c.dataset.k;D.poems[i].reviews[k]=!D.poems[i].reviews[k];save();renderPoemTable(ds);updatePoints();
+    });
+  }
+  const learned=poems.filter(p=>p.reviews&&p.reviews.m5).length;
+  let doneRev=0;poems.forEach(p=>REVIEW_KEYS.forEach(k=>{if(p.reviews[k])doneRev++;}));
+  const sp=document.getElementById("poem-stats");
+  if(sp)sp.innerHTML=`<span>已开背 ${learned} / ${poems.length} 首</span><span>复习打卡 ${doneRev} / ${poems.length*REVIEW_KEYS.length} 次</span><span>背诗可得积分 ${learned*PTS.poem + (doneRev-learned)*PTS.review}</span>`;
+}
+function speak(idx){
+  const t=D.poems[idx]&&D.poems[idx].text;if(!t)return;
+  if(!('speechSynthesis' in window)){toast('当前浏览器不支持朗读');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t.replace(/\n/g,' '));
+  u.lang='zh-CN';u.rate=0.8;u.pitch=1;speechSynthesis.speak(u);
+  toast('🔊 跟读中…');
+}
+function recitePoem(idx){
+  const pm=D.poems[idx];if(!pm)return;
+  let k=todayReviewKey(pm,viewDate)||'m5';
+  pm.reviews[k]=!pm.reviews[k];save();renderPoems();updatePoints();
+  toast(pm.reviews[k]?'✅ 已背诵，记下一笔！':'已取消今日背诵');
+}
+function gotoPoem(seq){
+  const pm=D.poems.find(p=>p.seq===seq);
+  if(pm&&pm.date)viewDate=pm.date;
+  document.querySelector('#tabs button[data-tab="poems"]').click();
+}
+
+/* ---------- DAILY ---------- */
+function renderDaily(){
+  const p=document.getElementById("panel-daily");
+  let head=`<thead><tr><th>周次</th><th>日期</th>`;
+  slots.forEach(s=>head+=`<th class="slot">${s.t}${s.s?`<br><small style="color:#b0b0bd">${s.s}</small>`:""}</th>`);
+  head+=`<th>评价</th><th>备注</th></tr></thead>`;
+  let body="<tbody>";
+  weeks.forEach(w=>{
+    w.days.forEach((day,idx)=>{
+      const d=D.daily[day]||{};
+      body+=`<tr>${idx===0?`<td class="wk" rowspan="${w.days.length}">${w.name}</td>`:""}<td><b>${day}</b></td>`;
+      slots.forEach(s=>{
+        const on=d[s.k]?"on":"";const mark=on?"✓":"";
+        body+=`<td><div class="cell ${on}" data-day="${day}" data-slot="${s.k}">${mark}</div></td>`;
+      });
+      const ev=d.eval||"";
+      body+=`<td><span class="eval" data-day="${day}">
+        <span data-v="★" style="${ev==='★'?'':'opacity:.25'}">★</span>
+        <span data-v="○" style="${ev==='○'?'':'opacity:.25'}">○</span>
+        <span data-v="√" style="${ev==='√'?'':'opacity:.25'}">√</span></span></td>`;
+      body+=`<td><input class="note-input" data-day="${day}" value="${esc(d.note||"")}" placeholder="…"/></td></tr>`;
+    });
+  });
+  body+="</tbody>";
+  const ds=todayStr();const m=dateMeta(ds);const dd=D.daily[ds]||{};
+  const todayItems=slots.map(sl=>{
+    const on=!!dd[sl.k];
+    return `<li><span class="chk ${on?'done':''}" onclick="toggleDaily('${ds}','${sl.k}')">${on?'✓':''}</span>
+      <span class="li-txt ${on?'done':''}">${esc(sl.t)}${sl.s?` <small style="color:#b0b0bd">(${sl.s})</small>`:''}</span></li>`;
+  }).join('');
+  p.innerHTML=`<div class="sec">
+    <h2>📆 暑假计划日历 <span class="badge">7月19日 – 8月3日</span></h2>
+    <div class="hint">下面是每天要学习的内容（各时段安排）。点单元格 = 完成该项并 <b>+5 积分</b>；点右侧 ⭐ 切换评价 ★优秀 / ○良好 / √一般。</div>
+    <div class="legend">
+      <span><b>★</b> 优秀</span><span><b>○</b> 良好</span><span><b>√</b> 一般</span>
+      <span>单元格点一下 = 完成 ✓（+5分），再点一下 = 取消</span>
+    </div>
+    <div class="grid-scroll" style="margin-top:12px"><table class="daily">${head+body}</table></div>
+  </div>
+  <div class="sec">
+    <h2>🗓️ 今日计划 <span class="badge">${ds} ${m.wd} ${m.week?'· '+m.week:''}</span></h2>
+    <div style="font-size:14px;font-weight:700;margin:6px 0 4px">点方框完成当日安排（每个 +5 积分）</div>
+    <ul class="list">${todayItems}</ul>
+  </div>`;
+  p.querySelectorAll(".cell").forEach(c=>c.onclick=()=>{
+    const day=c.dataset.day,slot=c.dataset.slot;D.daily[day]=D.daily[day]||{};
+    const was=D.daily[day][slot];D.daily[day][slot]=!was;save();renderDaily();updatePoints();
+    if(!was)toast('完成 +'+PTS.daily+' 积分 🪙');
+  });
+  p.querySelectorAll(".eval").forEach(e=>e.onclick=ev=>{
+    const day=e.dataset.day;const sp=ev.target.closest("span[data-v]");if(!sp)return;
+    const v=sp.dataset.v;D.daily[day]=D.daily[day]||{};D.daily[day].eval=(D.daily[day].eval===v)?"":v;save();renderDaily();
+  });
+  p.querySelectorAll(".note-input").forEach(n=>n.onchange=()=>{
+    const day=n.dataset.day;D.daily[day]=D.daily[day]||{};D.daily[day].note=n.value;save();
+  });
+}
+
+/* ---------- REWARDS ---------- */
+function renderRewards(){
+  updatePoints();
+  const grid=document.getElementById("reward-grid");grid.innerHTML="";
+  const a=availPoints();
+  D.rewards.forEach(r=>{
+    const card=document.createElement("div");card.className="reward";
+    const can=a>=(+r.cost);
+    card.innerHTML=`<div class="row top"><span>${esc(r.emoji||'🎁')}</span>
+        <input class="nm" value="${esc(r.name)}" /><button class="del2" title="删除">✕</button></div>
+      <div class="row"><span class="cost">🪙<input type="number" min="1" value="${r.cost}" style="width:54px" /> 分</span></div>
+      <button class="go" ${can?'':'disabled'}>${can?'兑换 🎉':'积分不足'}</button>`;
+    card.querySelector(".nm").onchange=e=>{r.name=e.target.value.trim()||r.name;save();};
+    card.querySelector(".cost input").onchange=e=>{r.cost=Math.max(1,+e.target.value||1);save();renderRewards();};
+    card.querySelector(".del2").onclick=()=>{D.rewards=D.rewards.filter(x=>x.id!==r.id);save();renderRewards();};
+    card.querySelector(".go").onclick=()=>redeem(r);
+    grid.appendChild(card);
+  });
+  if(!D.rewards.length)grid.innerHTML=`<div style="color:var(--muted)">还没有奖励，在下方添加一个吧～</div>`;
+  const log=document.getElementById("redeem-log");log.innerHTML="";
+  if(!D.redeemed.length)log.innerHTML=`<li><span class="li-txt" style="color:var(--muted)">还没有兑换记录，攒够积分来换喜欢的奖励吧 🍦</span></li>`;
+  else{D.redeemed.slice().reverse().forEach(r=>{
+    const li=document.createElement("li");
+    li.innerHTML=`<span class="li-txt">${esc(r.emoji||'🎁')} <b>${esc(r.name)}</b> · 花费 ${r.cost} 分</span><span class="when">${r.date}</span>`;
+    log.appendChild(li);
+  });}
+}
+function redeem(r){
+  const a=availPoints();
+  if(a<(+r.cost)){toast('积分不足，再努力一下！💪');return;}
+  D.redeemed.push({id:r.id,emoji:r.emoji,name:r.name,cost:r.cost,date:today()});
+  save();renderRewards();toast('兑换成功：'+r.name+' 🎉');
+}
+function addReward(){
+  const em=document.getElementById("rw-emoji").value.trim()||'🎁';
+  const nm=document.getElementById("rw-name").value.trim();
+  const co=Math.max(1,parseInt(document.getElementById("rw-cost").value)||1);
+  if(!nm)return;
+  D.rewards.push({id:'r'+Date.now(),emoji:em,name:nm,cost:co});
+  document.getElementById("rw-emoji").value="";document.getElementById("rw-name").value="";document.getElementById("rw-cost").value="";
+  save();renderRewards();
+}
+
+
+/* ---------- utils ---------- */
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function today(){const d=new Date();return `${d.getMonth()+1}月${d.getDate()}日`;}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1800);}
+function exportData(){const b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="暑假学习站数据.json";a.click();}
+function importData(){document.getElementById("import-file").click();}
+document.getElementById("import-file").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{D=migrate(JSON.parse(r.result));save();location.reload();}catch(err){alert("导入失败：文件格式不正确");}};
+  r.readAsText(f);
+};
+function resetAll(){if(confirm("确定要清空所有数据并恢复默认示例吗？")){D=defaultData();save();location.reload();}}
+
+/* init */
+updateBannerStats();
+renderOverview();
+</script>
+</body>
+</html>
