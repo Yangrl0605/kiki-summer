@@ -229,6 +229,7 @@
   .ch-score{font-size:15px;margin-bottom:12px}
   .ch-actions{display:flex;gap:10px;flex-wrap:wrap}
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="wrap">
@@ -297,7 +298,7 @@
   </div>
   </div>
 
-  <div class="footer">数据保存在「当前浏览器 + 当前网址」下，关闭页面不丢失；但换设备 / 换网址（如手机扫码链接）<b>不会自动同步</b>。· <span id="save-status">尚未保存</span> · KIKI暑假计划</div>
+  <div class="footer">☁ 已开启<b>多设备云端同步</b>：手机 / 电脑改了自动互相同步（断网时本地照常使用，联网后自动同步）。· <span id="save-status">尚未保存</span> · KIKI暑假计划</div>
 </div>
 <div class="toast" id="toast"></div>
 <input type="file" id="import-file" accept="application/json" style="display:none" />
@@ -385,11 +386,14 @@ function defaultData(){
     redeemed:[],
     poemBase:'2026-07-20',
     records:{},
-    preview:{}
+    preview:{},
+    version:0
   };
 }
 
 let D=load();
+let SB=null;
+try{ if(typeof supabase!=='undefined'&&supabase.createClient){ SB=supabase.createClient('https://mzlyrpqttyngcxjvhfpe.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16bHlycHF0dHluZ2N4anZoZnBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMTU2MjEsImV4cCI6MjEwMDg5MTYyMX0.bq0vdBfCdgHB35nNkgKpquQWem8Ow1Ug7bxbQgn4vjw'); } }catch(e){ SB=null; }
 let mathMode='tasks';
 let pv={view:'home',module:null,qi:0,answered:false,lastOk:false,results:[]};
 function migrate(d){
@@ -405,14 +409,44 @@ function migrate(d){
   if(!Array.isArray(d.redeemed)) d.redeemed=[];
   if(!d.poemBase) d.poemBase='2026-07-20';
   if(!d.preview||typeof d.preview!=='object') d.preview={};
+  if(typeof d.version!=='number'||d.version<0) d.version=0;
   return d;
 }
 function load(){
   try{const s=localStorage.getItem(KEY);if(s)return migrate(JSON.parse(s));}catch(e){}
   return defaultData();
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(D));
-  const el=document.getElementById('save-status');if(el)el.textContent='✓ 已保存 '+new Date().toLocaleTimeString();}
+let _pushTimer=null;
+function save(){
+  if(typeof D.version!=='number'||D.version<0)D.version=0;
+  localStorage.setItem(KEY,JSON.stringify(D));
+  const el=document.getElementById('save-status');if(el)el.textContent='✓ 已保存 '+new Date().toLocaleTimeString();
+  scheduleSync();
+}
+function scheduleSync(){ if(!SB)return; clearTimeout(_pushTimer); _pushTimer=setTimeout(syncPush,700); }
+async function syncPush(){
+  if(!SB)return;
+  try{
+    const v=(D.version||0)+1;
+    const {error}=await SB.from('app_state').upsert({id:1,data:D,version:v,updated_at:new Date().toISOString()});
+    if(error)throw error;
+    D.version=v; localStorage.setItem(KEY,JSON.stringify(D));
+  }catch(e){}
+}
+async function syncPull(announce){
+  if(!SB)return;
+  try{
+    const {data,error}=await SB.from('app_state').select('*').eq('id',1).maybeSingle();
+    if(error)throw error; if(!data)return;
+    const rv=data.version||0;
+    if(rv>(D.version||0)){
+      D=migrate(data.data||{}); D.version=rv;
+      localStorage.setItem(KEY,JSON.stringify(D));
+      renderActiveView(); updatePoints(); updateBannerStats();
+      if(announce)toast('☁ 已从其他设备同步');
+    }
+  }catch(e){}
+}
 
 /* ---------- points ---------- */
 function earnedPoints(){
@@ -1110,6 +1144,7 @@ function openModule(id){ pv={view:'module',module:id,qi:0,answered:false}; rende
 /* init */
 updateBannerStats();
 renderOverview();
+if(SB){ syncPull(false); setInterval(()=>syncPull(true),30000); }
 </script>
 </body>
 </html>
