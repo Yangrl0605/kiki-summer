@@ -212,6 +212,9 @@
   .pfb{font-size:13px;font-weight:700}
   .pfb.ok{color:var(--ok)} .pfb.no{color:var(--bad)}
   .phint{font-size:12px;color:#8a9aa8;margin-top:4px}
+  .kp-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+  .kp-video{display:inline-flex;align-items:center;gap:5px;text-decoration:none;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(120deg,#fb7299,#ff9a8b);padding:7px 13px;border-radius:9px;box-shadow:var(--shadow);transition:.15s}
+  .kp-video:hover{transform:translateY(-1px);filter:brightness(1.05)}
   .start-ch{margin-top:14px;width:100%;border:none;background:linear-gradient(120deg,#2f8fd6,#37b0a0);color:#fff;font-weight:800;font-size:15px;padding:13px;border-radius:12px;cursor:pointer}
   .pv-done-tip{margin-top:10px;font-size:13px;color:var(--ok);font-weight:700}
   .back{border:none;background:#eef3f7;color:var(--ink);font-weight:700;padding:7px 12px;border-radius:9px;cursor:pointer;margin-bottom:6px}
@@ -1016,7 +1019,10 @@ function previewModuleHTML(id){
       <div class="prow"><input id="pr-${id}-${i}" placeholder="填答案"/><button onclick="checkPractice('${id}',${i},this)">检查</button><span class="pfb" id="pfb-${id}-${i}"></span></div>
       ${kp.practice.hint?`<div class="phint">💡 ${esc(kp.practice.hint)}</div>`:''}
     </div>`:'';
-    return `<div class="pv-kp"><div class="pv-kp-t">${kp.t}</div><div class="pv-kp-text">${esc(kp.text)}</div>${pr}</div>`;
+    const topic=kp.t.replace(/^[①-⑧]\s*/,'').trim();
+    const vidUrl=kp.video?String(kp.video).replace(/"/g,'%22'):('https://search.bilibili.com/all?keyword='+encodeURIComponent('四年级上 数学 '+m.name+' '+topic+' 讲解'));
+    const vidBtn=`<a class="kp-video" href="${vidUrl}" target="_blank" rel="noopener">📺 讲解视频${kp.video?'':' ›'}</a>`;
+    return `<div class="pv-kp"><div class="pv-kp-t">${kp.t}</div><div class="pv-kp-text">${esc(kp.text)}</div>${pr}<div class="kp-actions">${vidBtn}</div></div>`;
   }).join('');
   const done=D.preview[id]&&D.preview[id].done;
   return `<div class="sec">
