@@ -187,6 +187,44 @@
     nav.sidebar-nav{flex:none;width:100%;flex-direction:row;overflow-x:auto;position:static;white-space:nowrap}
     nav.sidebar-nav button{width:auto;flex:0 0 auto}
   }
+  /* 预习四年级 · 数学闯关 */
+  .subtabs{display:flex;gap:8px;margin:10px 0 4px}
+  .subtabs button{border:none;cursor:pointer;font-size:13px;font-weight:700;padding:8px 14px;border-radius:10px;background:#eef3f7;color:var(--ink)}
+  .subtabs button.on{background:var(--math);color:#fff}
+  .pv-schedule{background:rgba(47,143,214,.1);border-radius:10px;padding:8px 12px;font-size:13px;margin:8px 0 12px}
+  .pv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+  .pv-card{background:var(--card);border-radius:14px;padding:12px;cursor:pointer;box-shadow:var(--shadow);transition:.2s;border:2px solid transparent}
+  .pv-card:hover{transform:translateY(-2px)}
+  .pv-card.done{border-color:var(--ok);background:linear-gradient(180deg,#eafaf0,#fff)}
+  .pv-emoji{font-size:26px}
+  .pv-name{font-weight:800;font-size:15px;margin:4px 0 2px}
+  .pv-meta{font-size:12.5px;color:var(--muted)}
+  .pv-date{font-size:12px;color:#7a93a8;margin-top:3px}
+  .pv-status{font-size:12.5px;margin-top:6px;font-weight:700;color:var(--ok)}
+  .pv-kp{background:#f6f9fc;border-radius:12px;padding:12px 14px;margin:10px 0}
+  .pv-kp-t{font-weight:800;color:var(--math);margin-bottom:4px}
+  .pv-kp-text{font-size:14px;line-height:1.6}
+  .practice{margin-top:8px;background:#fff;border-radius:10px;padding:8px 10px;border-left:3px solid var(--gold)}
+  .pq{font-size:13.5px;font-weight:600}
+  .prow{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
+  .prow input{flex:1;min-width:120px;padding:7px 10px;border:1px solid #d6e2ec;border-radius:8px;font-size:14px}
+  .prow button{border:none;background:var(--math);color:#fff;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer}
+  .pfb{font-size:13px;font-weight:700}
+  .pfb.ok{color:var(--ok)} .pfb.no{color:var(--bad)}
+  .phint{font-size:12px;color:#8a9aa8;margin-top:4px}
+  .start-ch{margin-top:14px;width:100%;border:none;background:linear-gradient(120deg,#2f8fd6,#37b0a0);color:#fff;font-weight:800;font-size:15px;padding:13px;border-radius:12px;cursor:pointer}
+  .pv-done-tip{margin-top:10px;font-size:13px;color:var(--ok);font-weight:700}
+  .back{border:none;background:#eef3f7;color:var(--ink);font-weight:700;padding:7px 12px;border-radius:9px;cursor:pointer;margin-bottom:6px}
+  .ch-progress{height:10px;border-radius:99px;background:#e3edf3;overflow:hidden;margin:8px 0}
+  .ch-progress>i{display:block;height:100%;background:var(--math);transition:width .3s}
+  .ch-q{font-size:17px;font-weight:800;margin:10px 0;line-height:1.5}
+  .ch-fb{font-size:14px;font-weight:700;margin:8px 0}
+  .ch-fb.ok{color:var(--ok)} .ch-fb.no{color:var(--bad)}
+  .ch-next{border:none;background:var(--math);color:#fff;font-weight:800;padding:11px 20px;border-radius:10px;cursor:pointer;font-size:15px}
+  .ch-win{font-size:24px;font-weight:900;color:var(--ok);margin:14px 0 6px}
+  .ch-lose{font-size:20px;font-weight:800;color:#e08a2b;margin:14px 0 6px}
+  .ch-score{font-size:15px;margin-bottom:12px}
+  .ch-actions{display:flex;gap:10px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -343,11 +381,14 @@ function defaultData(){
     rewards:defaultRewards(),
     redeemed:[],
     poemBase:'2026-07-20',
-    records:{}
+    records:{},
+    preview:{}
   };
 }
 
 let D=load();
+let mathMode='tasks';
+let pv={view:'home',module:null,qi:0,answered:false,lastOk:false,results:[]};
 function migrate(d){
   const stored = Array.isArray(d.poems) ? d.poems : [];
   const byKey = {};
@@ -360,6 +401,7 @@ function migrate(d){
   if(!Array.isArray(d.rewards)) d.rewards=defaultRewards();
   if(!Array.isArray(d.redeemed)) d.redeemed=[];
   if(!d.poemBase) d.poemBase='2026-07-20';
+  if(!d.preview||typeof d.preview!=='object') d.preview={};
   return d;
 }
 function load(){
@@ -377,6 +419,7 @@ function earnedPoints(){
     else if(k!=='eval'&&k!=='note'&&d[k]) p+=PTS.daily;
   }); });
   ['chinese','math','english'].forEach(k=>D.subjects[k].tasks.forEach(t=>{if(t.done)p+=PTS.task;}));
+  Object.values(D.preview||{}).forEach(v=>{ if(v&&v.done)p+=(v.points||0); });
   (D.poems||[]).forEach(pm=>{ if(pm.reviews){ if(pm.reviews.m5)p+=PTS.poem; REVIEW_KEYS.forEach((k,i)=>{ if(i>0&&pm.reviews[k])p+=PTS.review; }); } });
   return p;
 }
@@ -540,9 +583,16 @@ function chineseDayView(){
 }
 function renderSubject(key){
   const s=D.subjects[key];const p=document.getElementById("panel-"+key);
-  p.style.setProperty("--c",s.color);const st=subStat(key);
+  p.style.setProperty("--c",s.color);
+  if(key==='math' && mathMode==='preview'){ renderMathPreview(); return; }
+  const st=subStat(key);
+  const toggle = key==='math' ? `<div class="subtabs">
+      <button class="${mathMode==='tasks'?'on':''}" onclick="mathMode='tasks';renderSubject('math')">📝 日常学习</button>
+      <button class="${mathMode==='preview'?'on':''}" onclick="mathMode='preview';pv={view:'home'};renderSubject('math')">📚 预习四年级</button>
+    </div>` : '';
   p.innerHTML=`<div class="sec">
     <h2>${s.emoji} ${s.name} · 学习内容 <span class="badge">勾选 +10 积分</span></h2>
+    ${toggle}
     <div class="hint">勾选后记录完成日期，并汇总到积分与完成进度。</div>
     <div class="progress-big"><i style="width:${st.pct}%"></i></div>
     <div class="pstats"><span>已完成 ${st.done} 项</span><span>共 ${st.total} 项 · ${st.pct}%</span></div>
@@ -792,6 +842,264 @@ document.getElementById("import-file").onchange=e=>{
   r.readAsText(f);
 };
 function resetAll(){if(confirm("确定要清空所有数据并恢复默认示例吗？")){D=defaultData();save();location.reload();}}
+
+/* ================= 预习四年级 · 数学闯关模块 ================= */
+const PREVIEW_BASE='2026-07-20';
+const MATH_PREVIEW={
+  modules:[
+  {id:'m1',name:'大数的认识',emoji:'🔢',days:7,points:20,
+   kps:[
+    {t:'① 计数单位与数位',text:'用来表示数的大小的单位叫计数单位：一（个）、十、百、千、万、十万、百万、千万、亿、十亿…… 数位是指一个数中每个数字所占的位置（个位、十位、百位……）。相邻两个计数单位之间的进率都是 10。',
+     practice:{q:'10个一万是（ ）',a:'十万'}},
+    {t:'② 数级（个级·万级·亿级）',text:'从右往左每四位分一级：个级（个、十、百、千）、万级（万、十万、百万、千万）、亿级（亿、十亿、百亿、千亿）。读数写数都按级来。',
+     practice:{q:'数字 12345678 中，万级上的数是（ ）（写数字）',a:'2345',hint:'从右数第5~8位是万级'}},
+    {t:'③ 读大数',text:'读数从高位读起，一级一级地读；万级的数按个级读法读，再加「万」字；每级末尾的0不读，中间连续几个0只读一个零。',
+     practice:{q:'读出 3080000',a:'三百零八万',hint:'万级是308，个级全是0不读'}},
+    {t:'④ 写大数',text:'写数从高位写起，哪一位上一个单位也没有，就用0占位。',
+     practice:{q:'写出：三亿零五百万零四十',a:'305000040',hint:'亿级3，万级0500，个级0040'}},
+    {t:'⑤ 大数比较',text:'位数不同时，位数多的数大；位数相同时，从最高位比起，相同数位上数字大的那个数大。',
+     practice:{q:'比较：999999 ○ 1000000（填 > 或 <）',a:'<'}},
+    {t:'⑥ 改写（整万 / 整亿）',text:'整万数改写成用「万」作单位：去掉末尾4个0，加「万」字；整亿数去掉末尾8个0，加「亿」字。',
+     practice:{q:'230000 = （ ）万',a:'23'}},
+    {t:'⑦ 求近似数（四舍五入）',text:'看省略尾数部分的最高位，「四舍」：≤4舍去；「五入」：≥5进一。常用「≈」表示近似数。',
+     practice:{q:'省略亿位后面的尾数：345628000 ≈ （ ）亿',a:'3',hint:'千万位是4，四舍'}},
+    {t:'⑧ 十进制计数法 & 自然数',text:'每相邻两个计数单位间的进率都是10，叫十进制计数法。表示物体个数的0,1,2,3…叫自然数，最小自然数是0，没有最大的自然数。'}
+   ],
+   challenge:[
+    {q:'10个十万是（ ）',a:'一百万'},
+    {q:'读数：7006500200',a:'七十亿零六百五十万零二百'},
+    {q:'写出：五亿零三十万零七',a:'500300007'},
+    {q:'比较：10000000 ○ 9999999（填 > 或 <）',a:'>'},
+    {q:'把 460000 改写成用「万」作单位的数是（ ）万',a:'46'},
+    {q:'省略万位后面的尾数：349500 ≈ （ ）万',a:'35',hint:'千位是9，五入'}
+   ]},
+  {id:'m2',name:'公顷和平方千米',emoji:'📐',days:3,points:20,
+   kps:[
+    {t:'① 认识公顷',text:'测量土地面积常用「公顷」(ha)。边长100米的正方形面积是1公顷 = 10000平方米。',
+     practice:{q:'1公顷 = （ ）平方米',a:'10000'}},
+    {t:'② 认识平方千米',text:'计量比较大的土地面积用「平方千米」(km²)。边长1千米的正方形面积是1平方千米 = 1000000平方米 = 100公顷。',
+     practice:{q:'1平方千米 = （ ）公顷',a:'100'}},
+    {t:'③ 单位选择',text:'填面积单位看大小：教室用平方米，公园/校园用公顷，城市/国家用平方千米。',
+     practice:{q:'天安门广场约44（ ）（填 公顷 或 平方千米）',a:'公顷'}}
+   ],
+   challenge:[
+    {q:'3公顷 = （ ）平方米',a:'30000'},
+    {q:'5平方千米 = （ ）公顷',a:'500'},
+    {q:'故宫占地面积约72（ ）（单位）',a:'公顷'}
+   ]},
+  {id:'m3',name:'角的度量',emoji:'📏',days:5,points:20,
+   kps:[
+    {t:'① 线段·射线·直线',text:'线段有两个端点，可量长度；射线一个端点，向一端无限延伸；直线没有端点，向两端无限延伸。',
+     practice:{q:'（ ）只有一个端点',a:'射线'}},
+    {t:'② 角的定义',text:'从一点引出两条射线所组成的图形叫角。这点叫顶点，两条射线叫边。'},
+    {t:'③ 角的度量',text:'量角要用量角器，中心对顶点，0刻度线对边，看另一边刻度。1°是1度的角。',
+     practice:{q:'直角 = （ ）°',a:'90'}},
+    {t:'④ 角的分类',text:'锐角<90°，直角=90°，钝角>90°且<180°，平角=180°，周角=360°。1周角=2平角=4直角。',
+     practice:{q:'大于90°小于180°的角是（ ）角',a:'钝'}}
+   ],
+   challenge:[
+    {q:'平角 = （ ）°',a:'180'},
+    {q:'1周角 = （ ）个直角',a:'4'},
+    {q:'钟面上 3:00 时，时针分针夹角约（ ）°',a:'90'}
+   ]},
+  {id:'m4',name:'三位数乘两位数',emoji:'✖️',days:7,points:25,
+   kps:[
+    {t:'① 笔算方法',text:'三位数乘两位数：相同数位对齐，先用两位数个位乘三位数，再用十位乘（得数末位与十位对齐），最后相加。',
+     practice:{q:'145×12 的积是（ ）',a:'1740',hint:'145×2=290，145×10=1450，相加'}},
+    {t:'② 因数末尾有0',text:'先把0前面的数相乘，再看两个因数末尾一共有几个0，就在积的末尾添上几个0。',
+     practice:{q:'160×30 = （ ）',a:'4800'}},
+    {t:'③ 积的变化规律',text:'一个因数不变，另一个因数乘几，积也乘几；除以几，积也除以几。',
+     practice:{q:'若 20×4=80，则 20×12=（ ）',a:'240',hint:'4→12 乘了3，积也乘3'}},
+    {t:'④ 估算',text:'乘法估算：把因数看成接近的整十、整百数再算。'}
+   ],
+   challenge:[
+    {q:'234×23 = （ ）',a:'5382'},
+    {q:'250×40 的积末尾有（ ）个0',a:'3',hint:'25×4=100，再加两个0'},
+    {q:'若 A×B=300，A不变，B×5，积=（ ）',a:'1500'}
+   ]},
+  {id:'m5',name:'平行四边形和梯形',emoji:'🔷',days:5,points:20,
+   kps:[
+    {t:'① 平行与垂直',text:'同一平面内不相交的两条直线互相平行；相交成直角的互相垂直。',
+     practice:{q:'在同一平面内（ ）的两条直线叫平行线',a:'不相交'}},
+    {t:'② 平行四边形',text:'两组对边分别平行的四边形叫平行四边形；对边平行且相等，对角相等，容易变形（伸缩门原理）。',
+     practice:{q:'平行四边形有（ ）组对边平行',a:'两'}},
+    {t:'③ 梯形',text:'只有一组对边平行的四边形叫梯形。两腰相等的叫等腰梯形。',
+     practice:{q:'（ ）只有一组对边平行',a:'梯形'}},
+    {t:'④ 高',text:'从平行四边形一边上一点向对边画垂线，这点和垂足之间的线段是平行四边形的高。'}
+   ],
+   challenge:[
+    {q:'长方形、正方形是特殊的（ ）',a:'平行四边形'},
+    {q:'两条直线相交成（ ）°时互相垂直',a:'90'},
+    {q:'梯形中平行的一组对边叫（ ）和（ ）',a:'上底|下底'}
+   ]},
+  {id:'m6',name:'除数是两位数的除法',emoji:'➗',days:8,points:25,
+   kps:[
+    {t:'① 口算',text:'整十数除整十/几百几十：看作表内除法。如 80÷20=4，120÷30=4。',
+     practice:{q:'150÷30 = （ ）',a:'5'}},
+    {t:'② 笔算试商',text:'先看被除数前两位，不够看前三位；除到哪一位商就写那一位；余数必须比除数小。常用「四舍五入」法试商。',
+     practice:{q:'在 3□2÷34 中，商是两位数，□最小填（ ）',a:'4',hint:'前两位要 ≥34'}},
+    {t:'③ 商的变化规律',text:'被除数和除数同时乘或除以相同数（0除外），商不变。',
+     practice:{q:'若 90÷30=3，则 900÷300=（ ）',a:'3'}},
+    {t:'④ 商中间/末尾有0',text:'不够商1就商0占位。'}
+   ],
+   challenge:[
+    {q:'420÷60 = （ ）',a:'7'},
+    {q:'□52÷48 商是两位数，□最小填（ ）',a:'5'},
+    {q:'被除数和除数同时除以10，商（ ）',a:'不变'}
+   ]},
+  {id:'m7',name:'条形统计图',emoji:'📊',days:4,points:20,
+   kps:[
+    {t:'① 认识条形图',text:'用长短不同的直条表示数量的多少，一眼看出谁多谁少。',
+     practice:{q:'条形统计图用（ ）的长短表示数量多少',a:'直条'}},
+    {t:'② 画条形图',text:'先画横轴纵轴，确定1格代表几，再画直条并标上数据。'},
+    {t:'③ 读图分析',text:'会看标题、图例、横纵轴，进行比较和简单预测。'}
+   ],
+   challenge:[
+    {q:'要比较各班人数，最适合用（ ）统计图',a:'条形'},
+    {q:'1格代表5人，3格代表（ ）人',a:'15'}
+   ]},
+  {id:'m8',name:'数学广角—优化',emoji:'⚡',days:4,points:25,
+   kps:[
+    {t:'① 沏茶问题',text:'做事要讲究顺序，能同时做的尽量同时做，才能节省时间。',
+     practice:{q:'烧水8分、洗水壶1分、接水1分，可在烧水时洗茶杯2分。最少（ ）分喝上茶',a:'10',hint:'1+1+8'}},
+    {t:'② 烙饼问题',text:'每次最多烙2张，正反面各要时间。3张饼最少时间 = 3×单面时间（交替烙）。',
+     practice:{q:'烙3张饼，每面2分，最少（ ）分',a:'6'}},
+    {t:'③ 排队问题',text:'按用时从短到长依次处理，大家的总等待时间最短。'}
+   ],
+   challenge:[
+    {q:'煎3条鱼，每面3分，锅最多2条，最少（ ）分',a:'9'},
+    {q:'让总等待时间最短，应按用时（ ）到（ ）排列',a:'短|长'}
+   ]}
+  ]
+};
+function norm(s){return String(s==null?'':s).trim().replace(/[\s,，、]/g,'').toLowerCase();}
+function moduleRange(i){
+  let d=PREVIEW_BASE;
+  for(let k=0;k<i;k++) d=addDays(d, MATH_PREVIEW.modules[k].days);
+  return {start:d, end:addDays(d, MATH_PREVIEW.modules[i].days-1)};
+}
+function renderMathPreview(){
+  const p=document.getElementById('panel-math');
+  let h='';
+  if(pv.view==='home') h=previewHomeHTML();
+  else if(pv.view==='module') h=previewModuleHTML(pv.module);
+  else if(pv.view==='challenge') h=challengeHTML();
+  else if(pv.view==='result') h=resultHTML();
+  p.innerHTML=h;
+}
+function previewHomeHTML(){
+  const mods=MATH_PREVIEW.modules;
+  let cards=mods.map((m,i)=>{
+    const r=moduleRange(i);
+    const done=D.preview[m.id]&&D.preview[m.id].done;
+    const score=D.preview[m.id]?`${D.preview[m.id].score}/${D.preview[m.id].total}`:'';
+    return `<div class="pv-card ${done?'done':''}" onclick="openModule('${m.id}')">
+      <div class="pv-emoji">${m.emoji}</div>
+      <div class="pv-name">${i+1}. ${m.name}</div>
+      <div class="pv-meta">⏱ ${m.days}天 · 🏆 +${m.points}分</div>
+      <div class="pv-date">📅 ${r.start} ~ ${r.end}</div>
+      <div class="pv-status">${done?'✅ 已通关 '+score:'▫️ 未开始'}</div>
+    </div>`;
+  }).join('');
+  return `<div class="sec">
+    <h2>📚 预习四年级 · 数学闯关 <span class="badge">模块化预习</span></h2>
+    <div class="hint">按暑假节奏把四上数学分成 ${mods.length} 个模块，每模块先有趣学知识点+小练习，再闯关巩固，闯关成功得积分！</div>
+    <div class="pv-schedule">🗓 计划：从 <b>${PREVIEW_BASE}</b> 起，每模块约 3~8 天，依次完成。点卡片开始预习。</div>
+    <div class="pv-grid">${cards}</div>
+  </div>`;
+}
+function previewModuleHTML(id){
+  const m=MATH_PREVIEW.modules.find(x=>x.id===id);
+  const kps=m.kps.map((kp,i)=>{
+    const pr=kp.practice?`<div class="practice">
+      <div class="pq">📝 ${esc(kp.practice.q)}</div>
+      <div class="prow"><input id="pr-${id}-${i}" placeholder="填答案"/><button onclick="checkPractice('${id}',${i},this)">检查</button><span class="pfb" id="pfb-${id}-${i}"></span></div>
+      ${kp.practice.hint?`<div class="phint">💡 ${esc(kp.practice.hint)}</div>`:''}
+    </div>`:'';
+    return `<div class="pv-kp"><div class="pv-kp-t">${kp.t}</div><div class="pv-kp-text">${esc(kp.text)}</div>${pr}</div>`;
+  }).join('');
+  const done=D.preview[id]&&D.preview[id].done;
+  return `<div class="sec">
+    <button class="back" onclick="pv={view:'home'};renderMathPreview()">‹ 返回模块列表</button>
+    <h2>${m.emoji} ${m.name} <span class="badge">⏱ ${m.days}天</span></h2>
+    <div class="hint">先逐个过一遍知识点，带 📝 的做做小练习；全部看完后点底部「开始闯关」。</div>
+    ${kps}
+    <button class="start-ch" onclick="startChallenge('${id}')">🚀 开始闯关（共 ${m.challenge.length} 题 · 成功 +${m.points}分）</button>
+    ${done?`<div class="pv-done-tip">✅ 本模块已通关（${D.preview[id].score}/${D.preview[id].total}）可重刷巩固</div>`:''}
+  </div>`;
+}
+function checkPractice(modId,kpIdx,btn){
+  const m=MATH_PREVIEW.modules.find(x=>x.id===modId);
+  const a=m.kps[kpIdx].practice.a;
+  const v=norm(document.getElementById('pr-'+modId+'-'+kpIdx).value);
+  const ok=a.split('|').map(norm).includes(v);
+  const fb=document.getElementById('pfb-'+modId+'-'+kpIdx);
+  fb.textContent= ok?'✅ 答对啦！':('❌ 再想想～ 答案：'+a);
+  fb.className='pfb '+(ok?'ok':'no');
+}
+function startChallenge(id){ pv={view:'challenge',module:id,qi:0,answered:false,lastOk:false,results:[]}; renderMathPreview(); }
+function submitChallenge(){
+  const m=MATH_PREVIEW.modules.find(x=>x.id===pv.module);
+  const q=m.challenge[pv.qi];
+  const v=norm(document.getElementById('ch-input').value);
+  const ok=q.a.split('|').map(norm).includes(v);
+  pv.answered=true; pv.lastOk=ok; pv.results[pv.qi]=ok?'✓':'✗';
+  renderMathPreview();
+}
+function nextChallenge(){
+  const m=MATH_PREVIEW.modules.find(x=>x.id===pv.module);
+  if(pv.qi<m.challenge.length-1){ pv.qi++; pv.answered=false; renderMathPreview(); }
+  else finishChallenge();
+}
+function finishChallenge(){
+  const m=MATH_PREVIEW.modules.find(x=>x.id===pv.module);
+  const total=m.challenge.length;
+  const okCount=pv.results.filter(r=>r==='✓').length;
+  pv.view='result'; pv.success=(okCount===total);
+  if(pv.success){
+    D.preview[pv.module]={done:true,score:okCount,total,points:m.points,date:today()};
+    save();updatePoints();
+    toast('闯关成功 +'+m.points+' 积分 🪙');
+  } else { save(); }
+  renderMathPreview();
+}
+function challengeHTML(){
+  const m=MATH_PREVIEW.modules.find(x=>x.id===pv.module);
+  const q=m.challenge[pv.qi];
+  const total=m.challenge.length;
+  const fb = pv.answered ? `<div class="ch-fb ${pv.lastOk?'ok':'no'}">${pv.lastOk?'✅ 答对啦！':'❌ 正确答案：'+q.a}</div>` : '';
+  const action = pv.answered
+    ? `<button class="ch-next" onclick="nextChallenge()">${pv.qi<total-1?'下一题 ›':'查看结果'}</button>`
+    : `<button class="ch-next" onclick="submitChallenge()">提交答案</button>`;
+  return `<div class="sec">
+    <button class="back" onclick="pv={view:'module',answered:false};renderMathPreview()">‹ 退出闯关</button>
+    <h2>🚀 ${m.name} · 闯关 <span class="badge">第 ${pv.qi+1} / ${total} 题</span></h2>
+    <div class="ch-progress"><i style="width:${Math.round((pv.qi)/total*100)}%"></i></div>
+    <div class="ch-q">${esc(q.q)}</div>
+    <div class="prow"><input id="ch-input" placeholder="填答案，按提交" ${pv.answered?'disabled':''}/><span></span></div>
+    ${fb}
+    ${action}
+    ${q.hint&&!pv.answered?`<div class="phint">💡 ${esc(q.hint)}</div>`:''}
+  </div>`;
+}
+function resultHTML(){
+  const m=MATH_PREVIEW.modules.find(x=>x.id===pv.module);
+  const total=m.challenge.length;
+  const okCount=pv.results.filter(r=>r==='✓').length;
+  const body = pv.success
+    ? `<div class="ch-win">🎉 闯关成功！</div><div class="ch-score">答对 ${okCount}/${total} · 获得 <b>+${m.points}</b> 积分 🪙</div>`
+    : `<div class="ch-lose">💪 答对 ${okCount}/${total}，还差一点！</div><div class="ch-score">全部答对才能通关拿积分，再来一次吧～</div>`;
+  return `<div class="sec">
+    <h2>🏁 ${m.name} · 闯关结果</h2>
+    ${body}
+    <div class="ch-actions">
+      ${pv.success?'':`<button class="start-ch" onclick="startChallenge('${pv.module}')">🔁 再闯一次</button>`}
+      <button class="back" onclick="pv={view:'module'};renderMathPreview()">返回模块</button>
+      <button class="back" onclick="pv={view:'home'};renderMathPreview()">模块列表</button>
+    </div>
+  </div>`;
+}
+function openModule(id){ pv={view:'module',module:id,qi:0,answered:false}; renderMathPreview(); }
 
 /* init */
 updateBannerStats();
